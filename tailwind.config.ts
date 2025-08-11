@@ -52,6 +52,11 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Custom eco-themed colors
+				'eco-green': 'hsl(var(--eco-green))',
+				'earth-brown': 'hsl(var(--earth-brown))',
+				'warm-gold': 'hsl(var(--warm-gold))',
+				'sage': 'hsl(var(--sage))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
@@ -62,6 +67,14 @@ export default {
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
 				}
+			},
+			backgroundImage: {
+				'nature-gradient': 'var(--nature-gradient)',
+				'earth-gradient': 'var(--earth-gradient)',
+			},
+			boxShadow: {
+				'organic': 'var(--organic-shadow)',
+				'nature-glow': 'var(--nature-glow)',
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

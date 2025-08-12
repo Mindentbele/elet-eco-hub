@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, type ChangeEvent } from "react";
 import { Menu, X, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import logoDefault from "@/assets/logo-default.svg";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -46,16 +47,12 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className={`w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center overflow-hidden p-1 shrink-0 ${logoUrl ? 'bg-card' : 'bg-nature-gradient'}`}>
-              {logoUrl ? (
-                <img
-                  src={logoUrl}
-                  alt="ÉLET-Közösség logó"
-                  className="w-full h-full object-contain rounded-lg"
-                />
-              ) : (
-                <span className="text-primary-foreground font-bold text-lg">É</span>
-              )}
+            <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center overflow-hidden p-1 shrink-0 bg-card">
+              <img
+                src={logoUrl ?? logoDefault}
+                alt="ÉLET-Közösség logó"
+                className="w-full h-full object-contain rounded-lg"
+              />
             </div>
             <span className="text-xl font-bold text-primary">ÉLET-Közösség</span>
 

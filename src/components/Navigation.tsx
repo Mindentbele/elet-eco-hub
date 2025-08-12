@@ -6,6 +6,7 @@ const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const isEditable = import.meta.env.DEV;
 
   useEffect(() => {
     const stored = localStorage.getItem("siteLogoUrl");
@@ -65,7 +66,8 @@ const Navigation = () => {
               className="hidden"
               onChange={handleFileChange}
             />
-            <div className="hidden md:flex items-center space-x-1">
+            {isEditable && (
+              <div className="hidden md:flex items-center space-x-1">
               <Button
                 variant="ghost"
                 size="icon"
@@ -89,6 +91,7 @@ const Navigation = () => {
                 </Button>
               )}
             </div>
+            )}
           </div>
 
           {/* Desktop Navigation */}

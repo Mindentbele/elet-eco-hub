@@ -1,7 +1,13 @@
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Facebook, Instagram, Youtube } from "lucide-react";
 
 const Footer = () => {
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  useEffect(() => {
+    const stored = localStorage.getItem("siteLogoUrl");
+    if (stored) setLogoUrl(stored);
+  }, []);
   return (
     <footer id="contact" className="bg-primary text-primary-foreground">
       <div className="container mx-auto px-4 py-16">
@@ -9,8 +15,17 @@ const Footer = () => {
           {/* Logo and Description */}
           <div className="space-y-4">
             <div className="flex items-center space-x-2">
-              <div className="w-10 h-10 bg-warm-gold rounded-lg flex items-center justify-center">
-                <span className="text-primary font-bold text-lg">É</span>
+              <div className="w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center overflow-hidden p-1 shrink-0 bg-card">
+                {logoUrl ? (
+                  <img
+                    src={logoUrl}
+                    alt="ÉLET-Közösség logó"
+                    className="w-full h-full object-contain rounded-lg"
+                    loading="lazy"
+                  />
+                ) : (
+                  <span className="text-primary font-bold text-lg">É</span>
+                )}
               </div>
               <span className="text-xl font-bold">ÉLET-Közösség</span>
             </div>

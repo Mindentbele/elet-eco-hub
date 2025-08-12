@@ -45,7 +45,7 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className={`w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden p-1 ${logoUrl ? 'bg-card' : 'bg-nature-gradient'}`}>
+            <div className={`w-12 h-12 md:w-14 md:h-14 rounded-lg flex items-center justify-center overflow-hidden p-1 shrink-0 ${logoUrl ? 'bg-card' : 'bg-nature-gradient'}`}>
               {logoUrl ? (
                 <img
                   src={logoUrl}

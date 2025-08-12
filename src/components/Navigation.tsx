@@ -1,9 +1,33 @@
-import { useState } from "react";
-import { Menu, X } from "lucide-react";
+import { useState, useEffect, useRef, type ChangeEvent } from "react";
+import { Menu, X, Upload, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 const Navigation = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    const stored = localStorage.getItem("siteLogoUrl");
+    if (stored) setLogoUrl(stored);
+  }, []);
+
+  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      const result = reader.result as string;
+      setLogoUrl(result);
+      localStorage.setItem("siteLogoUrl", result);
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const clearLogo = () => {
+    setLogoUrl(null);
+    localStorage.removeItem("siteLogoUrl");
+  };
 
   const navItems = [
     { name: "Kezdőlap", href: "#home" },
@@ -21,10 +45,50 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-nature-gradient rounded-lg flex items-center justify-center">
-              <span className="text-primary-foreground font-bold text-lg">É</span>
+            <div className="w-10 h-10 bg-nature-gradient rounded-lg flex items-center justify-center overflow-hidden">
+              {logoUrl ? (
+                <img
+                  src={logoUrl}
+                  alt="ÉLET-Közösség logó"
+                  className="w-full h-full object-cover rounded-lg"
+                />
+              ) : (
+                <span className="text-primary-foreground font-bold text-lg">É</span>
+              )}
             </div>
             <span className="text-xl font-bold text-primary">ÉLET-Közösség</span>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+            <div className="hidden md:flex items-center space-x-1">
+              <Button
+                variant="ghost"
+                size="icon"
+                className="h-8 w-8"
+                onClick={() => fileInputRef.current?.click()}
+                aria-label="Logó feltöltése"
+                title="Logó feltöltése"
+              >
+                <Upload className="h-4 w-4" />
+              </Button>
+              {logoUrl && (
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="h-8 w-8"
+                  onClick={clearLogo}
+                  aria-label="Logó eltávolítása"
+                  title="Logó eltávolítása"
+                >
+                  <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+            </div>
           </div>
 
           {/* Desktop Navigation */}

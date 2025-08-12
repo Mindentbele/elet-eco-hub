@@ -45,12 +45,12 @@ const Navigation = () => {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="w-10 h-10 bg-nature-gradient rounded-lg flex items-center justify-center overflow-hidden">
+            <div className={`w-10 h-10 rounded-lg flex items-center justify-center overflow-hidden p-1 ${logoUrl ? 'bg-card' : 'bg-nature-gradient'}`}>
               {logoUrl ? (
                 <img
                   src={logoUrl}
                   alt="ÉLET-Közösség logó"
-                  className="w-full h-full object-cover rounded-lg"
+                  className="w-full h-full object-contain rounded-lg"
                 />
               ) : (
                 <span className="text-primary-foreground font-bold text-lg">É</span>

@@ -2,13 +2,15 @@ import { useEffect } from "react";
 import Navigation from "@/components/Navigation";
 import Hero from "@/components/Hero";
 import About from "@/components/About";
+import Blog from "@/components/Blog";
+import Gallery from "@/components/Gallery";
 import Events from "@/components/Events";
 import Newsletter from "@/components/Newsletter";
 import Footer from "@/components/Footer";
+import ScrollToTop from "@/components/ScrollToTop";
 
 const Index = () => {
   useEffect(() => {
-    // Update page title and meta description for SEO
     document.title = "ÉLET-Közösség Egyesület | Önellátó életmód és ökológiai tudatosság";
     
     const metaDescription = document.querySelector('meta[name="description"]');
@@ -22,9 +24,12 @@ const Index = () => {
       <Navigation />
       <Hero />
       <About />
+      <Blog />
+      <Gallery />
       <Events />
       <Newsletter />
       <Footer />
+      <ScrollToTop />
     </main>
   );
 };

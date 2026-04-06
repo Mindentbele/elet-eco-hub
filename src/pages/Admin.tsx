@@ -1,58 +1,32 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, Plus, Trash2, LogIn } from "lucide-react";
+import { ArrowLeft, Save, Plus, Trash2, LogIn, Upload, Image } from "lucide-react";
 import { Link } from "react-router-dom";
+import {
+  siteData,
+  defaultTexts,
+  defaultBlogPosts,
+  defaultGalleryItems,
+  defaultEvents,
+  defaultNavItems,
+  type SiteTexts,
+  type BlogPost,
+  type GalleryItem,
+  type EventItem,
+  type NavItem,
+} from "@/lib/siteData";
 
 const ADMIN_PASS = "elet2024";
-
-interface BlogPost {
-  id: number;
-  title: string;
-  excerpt: string;
-  date: string;
-  author: string;
-  category: string;
-  emoji: string;
-}
-
-interface SiteTexts {
-  heroTitle: string;
-  heroSubtitle: string;
-  aboutDescription: string;
-  missionText: string;
-  contactEmail: string;
-  contactPhone: string;
-  contactAddress: string;
-}
-
-const defaultTexts: SiteTexts = {
-  heroTitle: "ÉLET-Közösség Egyesület",
-  heroSubtitle: "Önellátó életmód, hagyományőrzés és ökológiai tudatosság. Csatlakozz közösségünkhöz a fenntartható jövőért!",
-  aboutDescription: "Az ÉLET-Közösség Egyesület egy olyan közösség, amely az önellátó életmód, a hagyományőrzés és az ökológiai tudatosság jegyében működik.",
-  missionText: "Egyesületünk 2020-ban alakult azzal a céllal, hogy összefogja azokat, akik hasonlóan gondolkodnak a fenntartható életmódról.",
-  contactEmail: "info@elet-kozosseg.hu",
-  contactPhone: "+36 30 123 4567",
-  contactAddress: "Budapest, Magyarország",
-};
 
 const Admin = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [password, setPassword] = useState("");
-  const [texts, setTexts] = useState<SiteTexts>(defaultTexts);
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([]);
   const { toast } = useToast();
-
-  useEffect(() => {
-    const saved = localStorage.getItem("siteTexts");
-    if (saved) setTexts(JSON.parse(saved));
-    const savedBlog = localStorage.getItem("blogPosts");
-    if (savedBlog) setBlogPosts(JSON.parse(savedBlog));
-  }, []);
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
@@ -63,59 +37,17 @@ const Admin = () => {
     }
   };
 
-  const saveTexts = () => {
-    localStorage.setItem("siteTexts", JSON.stringify(texts));
-    toast({ title: "Szövegek mentve!", description: "A változtatások azonnal érvénybe lépnek." });
-  };
-
-  const saveBlog = () => {
-    localStorage.setItem("blogPosts", JSON.stringify(blogPosts));
-    toast({ title: "Blog bejegyzések mentve!" });
-  };
-
-  const addPost = () => {
-    setBlogPosts([
-      ...blogPosts,
-      {
-        id: Date.now(),
-        title: "Új bejegyzés",
-        excerpt: "",
-        date: new Date().toLocaleDateString("hu-HU", { year: "numeric", month: "long", day: "numeric" }) + ".",
-        author: "",
-        category: "",
-        emoji: "📝",
-      },
-    ]);
-  };
-
-  const updatePost = (id: number, field: keyof BlogPost, value: string) => {
-    setBlogPosts(blogPosts.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
-  };
-
-  const deletePost = (id: number) => {
-    setBlogPosts(blogPosts.filter((p) => p.id !== id));
-  };
-
   if (!loggedIn) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-muted/30 p-4">
         <Card className="p-8 w-full max-w-sm">
           <h1 className="text-2xl font-bold text-primary mb-6 text-center">Admin belépés</h1>
           <form onSubmit={handleLogin} className="space-y-4">
-            <Input
-              type="password"
-              placeholder="Jelszó"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-            <Button type="submit" className="w-full bg-primary">
-              <LogIn className="mr-2 h-4 w-4" /> Belépés
-            </Button>
+            <Input type="password" placeholder="Jelszó" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <Button type="submit" className="w-full bg-primary"><LogIn className="mr-2 h-4 w-4" /> Belépés</Button>
           </form>
           <div className="mt-4 text-center">
-            <Link to="/" className="text-sm text-muted-foreground hover:text-primary">
-              ← Vissza az oldalra
-            </Link>
+            <Link to="/" className="text-sm text-muted-foreground hover:text-primary">← Vissza az oldalra</Link>
           </div>
         </Card>
       </div>
@@ -126,118 +58,288 @@ const Admin = () => {
     <div className="min-h-screen bg-muted/30">
       <header className="bg-primary text-primary-foreground py-4 px-6 flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <Link to="/">
-            <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
-          </Link>
+          <Link to="/"><Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10"><ArrowLeft className="h-5 w-5" /></Button></Link>
           <h1 className="text-xl font-bold">ÉLET-Közösség Admin</h1>
         </div>
       </header>
 
-      <div className="container mx-auto px-4 py-8 max-w-4xl">
+      <div className="container mx-auto px-4 py-8 max-w-5xl">
         <Tabs defaultValue="texts">
-          <TabsList className="mb-6">
+          <TabsList className="mb-6 flex-wrap">
             <TabsTrigger value="texts">Szövegek</TabsTrigger>
-            <TabsTrigger value="blog">Blog kezelés</TabsTrigger>
+            <TabsTrigger value="blog">Blog</TabsTrigger>
+            <TabsTrigger value="gallery">Galéria</TabsTrigger>
+            <TabsTrigger value="events">Események</TabsTrigger>
+            <TabsTrigger value="nav">Menü</TabsTrigger>
+            <TabsTrigger value="logo">Logó</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="texts">
-            <Card className="p-6 space-y-6">
-              <h2 className="text-xl font-bold text-primary">Oldal szövegek szerkesztése</h2>
-
-              <div className="space-y-4">
-                <div>
-                  <label className="text-sm font-medium text-foreground">Főcím</label>
-                  <Input value={texts.heroTitle} onChange={(e) => setTexts({ ...texts, heroTitle: e.target.value })} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground">Alcím / leírás</label>
-                  <Textarea value={texts.heroSubtitle} onChange={(e) => setTexts({ ...texts, heroSubtitle: e.target.value })} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground">Rólunk szekció</label>
-                  <Textarea rows={4} value={texts.aboutDescription} onChange={(e) => setTexts({ ...texts, aboutDescription: e.target.value })} />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-foreground">Küldetés szöveg</label>
-                  <Textarea rows={4} value={texts.missionText} onChange={(e) => setTexts({ ...texts, missionText: e.target.value })} />
-                </div>
-
-                <h3 className="text-lg font-semibold text-primary pt-4">Kapcsolat adatok</h3>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-foreground">Email</label>
-                    <Input value={texts.contactEmail} onChange={(e) => setTexts({ ...texts, contactEmail: e.target.value })} />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-foreground">Telefon</label>
-                    <Input value={texts.contactPhone} onChange={(e) => setTexts({ ...texts, contactPhone: e.target.value })} />
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-foreground">Cím</label>
-                    <Input value={texts.contactAddress} onChange={(e) => setTexts({ ...texts, contactAddress: e.target.value })} />
-                  </div>
-                </div>
-              </div>
-
-              <Button onClick={saveTexts} className="bg-primary">
-                <Save className="mr-2 h-4 w-4" /> Szövegek mentése
-              </Button>
-            </Card>
-          </TabsContent>
-
-          <TabsContent value="blog">
-            <Card className="p-6 space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-bold text-primary">Blog bejegyzések</h2>
-                <Button onClick={addPost} size="sm" className="bg-primary">
-                  <Plus className="mr-1 h-4 w-4" /> Új bejegyzés
-                </Button>
-              </div>
-
-              {blogPosts.length === 0 && (
-                <p className="text-muted-foreground text-center py-8">
-                  Még nincsenek admin blog bejegyzések. Kattints az "Új bejegyzés" gombra!
-                </p>
-              )}
-
-              <div className="space-y-6">
-                {blogPosts.map((post) => (
-                  <Card key={post.id} className="p-4 space-y-3 border-border">
-                    <div className="flex items-center justify-between">
-                      <Input
-                        value={post.emoji}
-                        onChange={(e) => updatePost(post.id, "emoji", e.target.value)}
-                        className="w-16"
-                        placeholder="Emoji"
-                      />
-                      <Button variant="ghost" size="icon" className="text-destructive" onClick={() => deletePost(post.id)}>
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                    <Input value={post.title} onChange={(e) => updatePost(post.id, "title", e.target.value)} placeholder="Cím" />
-                    <Textarea value={post.excerpt} onChange={(e) => updatePost(post.id, "excerpt", e.target.value)} placeholder="Kivonat / leírás" />
-                    <div className="grid grid-cols-3 gap-2">
-                      <Input value={post.author} onChange={(e) => updatePost(post.id, "author", e.target.value)} placeholder="Szerző" />
-                      <Input value={post.category} onChange={(e) => updatePost(post.id, "category", e.target.value)} placeholder="Kategória" />
-                      <Input value={post.date} onChange={(e) => updatePost(post.id, "date", e.target.value)} placeholder="Dátum" />
-                    </div>
-                  </Card>
-                ))}
-              </div>
-
-              {blogPosts.length > 0 && (
-                <Button onClick={saveBlog} className="bg-primary">
-                  <Save className="mr-2 h-4 w-4" /> Blog mentése
-                </Button>
-              )}
-            </Card>
-          </TabsContent>
+          <TabsContent value="texts"><TextsEditor /></TabsContent>
+          <TabsContent value="blog"><BlogEditor /></TabsContent>
+          <TabsContent value="gallery"><GalleryEditor /></TabsContent>
+          <TabsContent value="events"><EventsEditor /></TabsContent>
+          <TabsContent value="nav"><NavEditor /></TabsContent>
+          <TabsContent value="logo"><LogoEditor /></TabsContent>
         </Tabs>
       </div>
     </div>
   );
 };
+
+// ---- Text Editor ----
+function TextsEditor() {
+  const [texts, setTexts] = useState<SiteTexts>(defaultTexts);
+  const { toast } = useToast();
+
+  useEffect(() => { setTexts(siteData.getTexts()); }, []);
+
+  const save = () => {
+    siteData.setTexts(texts);
+    toast({ title: "Szövegek mentve!" });
+  };
+
+  const field = (label: string, key: keyof SiteTexts, multiline = false) => (
+    <div key={key}>
+      <label className="text-sm font-medium text-foreground">{label}</label>
+      {multiline ? (
+        <Textarea rows={3} value={texts[key]} onChange={(e) => setTexts({ ...texts, [key]: e.target.value })} />
+      ) : (
+        <Input value={texts[key]} onChange={(e) => setTexts({ ...texts, [key]: e.target.value })} />
+      )}
+    </div>
+  );
+
+  return (
+    <Card className="p-6 space-y-4">
+      <h2 className="text-xl font-bold text-primary">Szövegek szerkesztése</h2>
+      {field("Főcím (Hero)", "heroTitle")}
+      {field("Alcím (Hero)", "heroSubtitle", true)}
+      {field("Rólunk leírás", "aboutDescription", true)}
+      {field("Küldetés 1. bekezdés", "missionText", true)}
+      {field("Küldetés 2. bekezdés", "missionParagraph2", true)}
+      {field("Küldetés 3. bekezdés", "missionParagraph3", true)}
+      {field("Hírlevél cím", "newsletterTitle")}
+      {field("Hírlevél leírás", "newsletterDescription", true)}
+      {field("Lábléc leírás", "footerDescription", true)}
+      <h3 className="text-lg font-semibold text-primary pt-2">Kapcsolat</h3>
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {field("Email", "contactEmail")}
+        {field("Telefon", "contactPhone")}
+        {field("Cím", "contactAddress")}
+      </div>
+      <Button onClick={save} className="bg-primary"><Save className="mr-2 h-4 w-4" /> Mentés</Button>
+    </Card>
+  );
+}
+
+// ---- Blog Editor ----
+function BlogEditor() {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const { toast } = useToast();
+
+  useEffect(() => { setPosts(siteData.getBlogPosts()); }, []);
+
+  const save = () => { siteData.setBlogPosts(posts); toast({ title: "Blog mentve!" }); };
+  const add = () => setPosts([...posts, { id: Date.now(), title: "Új bejegyzés", excerpt: "", date: new Date().toLocaleDateString("hu-HU", { year: "numeric", month: "long", day: "numeric" }) + ".", author: "", category: "", emoji: "📝" }]);
+  const update = (id: number, field: keyof BlogPost, value: string) => setPosts(posts.map((p) => (p.id === id ? { ...p, [field]: value } : p)));
+  const remove = (id: number) => setPosts(posts.filter((p) => p.id !== id));
+
+  const handleImage = (id: number, file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => update(id, "imageUrl" as keyof BlogPost, reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <Card className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-primary">Blog bejegyzések ({posts.length})</h2>
+        <Button onClick={add} size="sm" className="bg-primary"><Plus className="mr-1 h-4 w-4" /> Új</Button>
+      </div>
+      {posts.map((post) => (
+        <Card key={post.id} className="p-4 space-y-3 border-border">
+          <div className="flex items-center justify-between">
+            <Input value={post.emoji} onChange={(e) => update(post.id, "emoji", e.target.value)} className="w-16" placeholder="Emoji" />
+            <div className="flex gap-1">
+              <label className="cursor-pointer">
+                <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleImage(post.id, e.target.files[0])} />
+                <Button variant="ghost" size="icon" asChild><span><Image className="h-4 w-4" /></span></Button>
+              </label>
+              <Button variant="ghost" size="icon" className="text-destructive" onClick={() => remove(post.id)}><Trash2 className="h-4 w-4" /></Button>
+            </div>
+          </div>
+          {post.imageUrl && <img src={post.imageUrl} alt="" className="h-24 rounded object-cover" />}
+          <Input value={post.title} onChange={(e) => update(post.id, "title", e.target.value)} placeholder="Cím" />
+          <Textarea value={post.excerpt} onChange={(e) => update(post.id, "excerpt", e.target.value)} placeholder="Kivonat" />
+          <div className="grid grid-cols-3 gap-2">
+            <Input value={post.author} onChange={(e) => update(post.id, "author", e.target.value)} placeholder="Szerző" />
+            <Input value={post.category} onChange={(e) => update(post.id, "category", e.target.value)} placeholder="Kategória" />
+            <Input value={post.date} onChange={(e) => update(post.id, "date", e.target.value)} placeholder="Dátum" />
+          </div>
+        </Card>
+      ))}
+      {posts.length > 0 && <Button onClick={save} className="bg-primary"><Save className="mr-2 h-4 w-4" /> Blog mentése</Button>}
+    </Card>
+  );
+}
+
+// ---- Gallery Editor ----
+function GalleryEditor() {
+  const [items, setItems] = useState<GalleryItem[]>([]);
+  const { toast } = useToast();
+
+  useEffect(() => { setItems(siteData.getGalleryItems()); }, []);
+
+  const save = () => { siteData.setGalleryItems(items); toast({ title: "Galéria mentve!" }); };
+  const add = () => setItems([...items, { id: Date.now(), title: "Új kép", emoji: "📷", category: "Egyéb" }]);
+  const update = (id: number, field: keyof GalleryItem, value: string) => setItems(items.map((i) => (i.id === id ? { ...i, [field]: value } : i)));
+  const remove = (id: number) => setItems(items.filter((i) => i.id !== id));
+
+  const handleImage = (id: number, file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => update(id, "imageUrl" as keyof GalleryItem, reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
+  return (
+    <Card className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-primary">Galéria ({items.length} kép)</h2>
+        <Button onClick={add} size="sm" className="bg-primary"><Plus className="mr-1 h-4 w-4" /> Új kép</Button>
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {items.map((item) => (
+          <Card key={item.id} className="p-4 space-y-2 border-border">
+            <div className="flex items-center justify-between">
+              <Input value={item.emoji} onChange={(e) => update(item.id, "emoji", e.target.value)} className="w-16" />
+              <div className="flex gap-1">
+                <label className="cursor-pointer">
+                  <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleImage(item.id, e.target.files[0])} />
+                  <Button variant="ghost" size="icon" asChild><span><Image className="h-4 w-4" /></span></Button>
+                </label>
+                <Button variant="ghost" size="icon" className="text-destructive" onClick={() => remove(item.id)}><Trash2 className="h-4 w-4" /></Button>
+              </div>
+            </div>
+            {item.imageUrl && <img src={item.imageUrl} alt="" className="h-20 rounded object-cover w-full" />}
+            <Input value={item.title} onChange={(e) => update(item.id, "title", e.target.value)} placeholder="Cím" />
+            <Input value={item.category} onChange={(e) => update(item.id, "category", e.target.value)} placeholder="Kategória" />
+          </Card>
+        ))}
+      </div>
+      {items.length > 0 && <Button onClick={save} className="bg-primary"><Save className="mr-2 h-4 w-4" /> Galéria mentése</Button>}
+    </Card>
+  );
+}
+
+// ---- Events Editor ----
+function EventsEditor() {
+  const [events, setEvents] = useState<EventItem[]>([]);
+  const { toast } = useToast();
+
+  useEffect(() => { setEvents(siteData.getEvents()); }, []);
+
+  const save = () => { siteData.setEvents(events); toast({ title: "Események mentve!" }); };
+  const add = () => setEvents([...events, { id: Date.now(), title: "Új esemény", date: "", time: "", location: "", description: "", participants: 0, image: "📅" }]);
+  const update = (id: number, field: keyof EventItem, value: string | number) => setEvents(events.map((e) => (e.id === id ? { ...e, [field]: value } : e)));
+  const remove = (id: number) => setEvents(events.filter((e) => e.id !== id));
+
+  return (
+    <Card className="p-6 space-y-6">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-primary">Események ({events.length})</h2>
+        <Button onClick={add} size="sm" className="bg-primary"><Plus className="mr-1 h-4 w-4" /> Új esemény</Button>
+      </div>
+      {events.map((ev) => (
+        <Card key={ev.id} className="p-4 space-y-3 border-border">
+          <div className="flex items-center justify-between">
+            <Input value={ev.image} onChange={(e) => update(ev.id, "image", e.target.value)} className="w-16" placeholder="Emoji" />
+            <Button variant="ghost" size="icon" className="text-destructive" onClick={() => remove(ev.id)}><Trash2 className="h-4 w-4" /></Button>
+          </div>
+          <Input value={ev.title} onChange={(e) => update(ev.id, "title", e.target.value)} placeholder="Cím" />
+          <Textarea value={ev.description} onChange={(e) => update(ev.id, "description", e.target.value)} placeholder="Leírás" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <Input value={ev.date} onChange={(e) => update(ev.id, "date", e.target.value)} placeholder="Dátum" />
+            <Input value={ev.time} onChange={(e) => update(ev.id, "time", e.target.value)} placeholder="Időpont" />
+            <Input value={ev.location} onChange={(e) => update(ev.id, "location", e.target.value)} placeholder="Helyszín" />
+            <Input type="number" value={ev.participants} onChange={(e) => update(ev.id, "participants", parseInt(e.target.value) || 0)} placeholder="Résztvevők" />
+          </div>
+        </Card>
+      ))}
+      {events.length > 0 && <Button onClick={save} className="bg-primary"><Save className="mr-2 h-4 w-4" /> Események mentése</Button>}
+    </Card>
+  );
+}
+
+// ---- Nav Editor ----
+function NavEditor() {
+  const [items, setItems] = useState<NavItem[]>(defaultNavItems);
+  const { toast } = useToast();
+
+  useEffect(() => { setItems(siteData.getNavItems()); }, []);
+
+  const save = () => { siteData.setNavItems(items); toast({ title: "Menü mentve! Frissítsd az oldalt a változtatások megtekintéséhez." }); };
+  const add = () => setItems([...items, { name: "Új menüpont", href: "#" }]);
+  const remove = (i: number) => setItems(items.filter((_, idx) => idx !== i));
+
+  return (
+    <Card className="p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-primary">Menüpontok</h2>
+        <Button onClick={add} size="sm" className="bg-primary"><Plus className="mr-1 h-4 w-4" /> Új</Button>
+      </div>
+      {items.map((item, i) => (
+        <div key={i} className="flex gap-2 items-center">
+          <Input value={item.name} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], name: e.target.value }; setItems(n); }} placeholder="Név" />
+          <Input value={item.href} onChange={(e) => { const n = [...items]; n[i] = { ...n[i], href: e.target.value }; setItems(n); }} placeholder="Link (#about)" />
+          <Button variant="ghost" size="icon" className="text-destructive shrink-0" onClick={() => remove(i)}><Trash2 className="h-4 w-4" /></Button>
+        </div>
+      ))}
+      <Button onClick={save} className="bg-primary"><Save className="mr-2 h-4 w-4" /> Menü mentése</Button>
+    </Card>
+  );
+}
+
+// ---- Logo Editor ----
+function LogoEditor() {
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+  const { toast } = useToast();
+
+  useEffect(() => { setLogoUrl(siteData.getLogo()); }, []);
+
+  const handleUpload = (file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const url = reader.result as string;
+      setLogoUrl(url);
+      siteData.setLogo(url);
+      toast({ title: "Logó feltöltve!" });
+    };
+    reader.readAsDataURL(file);
+  };
+
+  const clear = () => {
+    setLogoUrl(null);
+    siteData.clearLogo();
+    toast({ title: "Logó eltávolítva!" });
+  };
+
+  return (
+    <Card className="p-6 space-y-4">
+      <h2 className="text-xl font-bold text-primary">Logó kezelés</h2>
+      <div className="flex items-center gap-6">
+        <div className="w-24 h-24 rounded-xl border-2 border-dashed border-border flex items-center justify-center overflow-hidden bg-card">
+          {logoUrl ? <img src={logoUrl} alt="Logó" className="w-full h-full object-contain p-2" /> : <Upload className="h-8 w-8 text-muted-foreground" />}
+        </div>
+        <div className="space-y-2">
+          <input ref={fileRef} type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleUpload(e.target.files[0])} />
+          <Button onClick={() => fileRef.current?.click()} className="bg-primary"><Upload className="mr-2 h-4 w-4" /> Logó feltöltése</Button>
+          {logoUrl && <Button variant="outline" className="ml-2 text-destructive" onClick={clear}><Trash2 className="mr-2 h-4 w-4" /> Eltávolítás</Button>}
+        </div>
+      </div>
+      <p className="text-sm text-muted-foreground">PNG vagy SVG formátum ajánlott, átlátszó háttérrel.</p>
+    </Card>
+  );
+}
 
 export default Admin;

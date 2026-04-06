@@ -1,68 +1,31 @@
+import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, User, ArrowRight } from "lucide-react";
+import { Calendar, User, ArrowRight, ArrowLeft } from "lucide-react";
+import { siteData, defaultBlogPosts, type BlogPost } from "@/lib/siteData";
+import { useAnimateOnScroll } from "@/hooks/useAnimateOnScroll";
 
-const blogPosts = [
-  {
-    id: 1,
-    title: "Hogyan kezdj el konyhakerti gazdálkodni?",
-    excerpt: "Tippek és trükkök kezdőknek az otthoni kertgazdálkodáshoz. Ismerd meg a legfontosabb lépéseket a sikeres termesztéshez.",
-    date: "2024. szeptember 20.",
-    author: "Kovács Anna",
-    category: "Kertészkedés",
-    emoji: "🌱",
-  },
-  {
-    id: 2,
-    title: "Hagyományos tartósítási módszerek",
-    excerpt: "Őseink is ismerték: fermentálás, szárítás, füstölés. Fedezd fel a természetes tartósítás titkait!",
-    date: "2024. szeptember 15.",
-    author: "Nagy Péter",
-    category: "Hagyomány",
-    emoji: "🫙",
-  },
-  {
-    id: 3,
-    title: "Fenntartható építkezés természetes anyagokból",
-    excerpt: "Vályog, szalma, fa — hogyan építsünk környezetbarát otthont minimális ökológiai lábnyommal?",
-    date: "2024. szeptember 10.",
-    author: "Tóth László",
-    category: "Építkezés",
-    emoji: "🏡",
-  },
-  {
-    id: 4,
-    title: "Gyógynövények a házi patikában",
-    excerpt: "A legfontosabb gyógynövények és felhasználásuk. Készíts otthon tinktúrákat, teákat és kenőcsöket.",
-    date: "2024. augusztus 28.",
-    author: "Szabó Éva",
-    category: "Egészség",
-    emoji: "🌿",
-  },
-  {
-    id: 5,
-    title: "Közösségi gazdálkodás: együtt könnyebb",
-    excerpt: "Hogyan szervezzünk közösségi kertet? Tapasztalatok és sikertörténetek csapatmunkáról.",
-    date: "2024. augusztus 20.",
-    author: "Molnár Gábor",
-    category: "Közösség",
-    emoji: "🤝",
-  },
-  {
-    id: 6,
-    title: "Esővíz gyűjtés és felhasználás",
-    excerpt: "Lépésről lépésre útmutató az esővíz gyűjtő rendszer kialakításához és hatékony felhasználásához.",
-    date: "2024. augusztus 12.",
-    author: "Kiss Judit",
-    category: "Fenntarthatóság",
-    emoji: "💧",
-  },
-];
+const POSTS_PER_PAGE = 3;
 
 const Blog = () => {
+  const [posts, setPosts] = useState<BlogPost[]>([]);
+  const [page, setPage] = useState(0);
+  const { ref, isVisible } = useAnimateOnScroll();
+
+  useEffect(() => {
+    const saved = siteData.getBlogPosts();
+    setPosts(saved.length > 0 ? saved : defaultBlogPosts);
+  }, []);
+
+  const totalPages = Math.ceil(posts.length / POSTS_PER_PAGE);
+  const visible = posts.slice(page * POSTS_PER_PAGE, (page + 1) * POSTS_PER_PAGE);
+
   return (
     <section id="blog" className="py-20 bg-background">
-      <div className="container mx-auto px-4">
+      <div
+        ref={ref}
+        className={`container mx-auto px-4 transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+      >
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-primary mb-6">Blog</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
@@ -71,13 +34,18 @@ const Blog = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-          {blogPosts.map((post) => (
+          {visible.map((post, i) => (
             <Card
               key={post.id}
-              className="overflow-hidden hover:shadow-organic transition-all duration-300 group"
+              className="overflow-hidden hover:shadow-organic transition-all duration-500 group"
+              style={{ animationDelay: `${i * 120}ms` }}
             >
-              <div className="h-40 bg-muted/50 flex items-center justify-center text-6xl">
-                {post.emoji}
+              <div className="h-40 bg-muted/50 flex items-center justify-center text-6xl overflow-hidden">
+                {post.imageUrl ? (
+                  <img src={post.imageUrl} alt={post.title} className="w-full h-full object-cover" />
+                ) : (
+                  post.emoji
+                )}
               </div>
               <div className="p-6">
                 <span className="inline-block text-xs font-semibold uppercase tracking-wider text-accent-foreground bg-accent/20 px-3 py-1 rounded-full mb-3">
@@ -102,11 +70,31 @@ const Blog = () => {
           ))}
         </div>
 
-        <div className="text-center">
-          <Button variant="outline" size="lg" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-            Összes bejegyzés <ArrowRight className="ml-2 h-4 w-4" />
-          </Button>
-        </div>
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <Button
+              variant="outline"
+              size="icon"
+              disabled={page === 0}
+              onClick={() => setPage(page - 1)}
+              className="border-primary text-primary"
+            >
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-sm text-muted-foreground">
+              {page + 1} / {totalPages}
+            </span>
+            <Button
+              variant="outline"
+              size="icon"
+              disabled={page >= totalPages - 1}
+              onClick={() => setPage(page + 1)}
+              className="border-primary text-primary"
+            >
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
       </div>
     </section>
   );

@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, User, ArrowRight, ArrowLeft } from "lucide-react";
+import { Calendar, User, ArrowRight, ArrowLeft, X } from "lucide-react";
 import { siteData, defaultBlogPosts, type BlogPost } from "@/lib/siteData";
 import { useAnimateOnScroll } from "@/hooks/useAnimateOnScroll";
 
@@ -10,6 +10,7 @@ const POSTS_PER_PAGE = 3;
 const Blog = () => {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [page, setPage] = useState(0);
+  const [openPost, setOpenPost] = useState<BlogPost | null>(null);
   const { ref, isVisible } = useAnimateOnScroll();
 
   useEffect(() => {
@@ -37,8 +38,9 @@ const Blog = () => {
           {visible.map((post, i) => (
             <Card
               key={post.id}
-              className="overflow-hidden hover:shadow-organic transition-all duration-500 group"
+              className="overflow-hidden hover:shadow-organic transition-all duration-500 group cursor-pointer"
               style={{ animationDelay: `${i * 120}ms` }}
+              onClick={() => setOpenPost(post)}
             >
               <div className="h-40 bg-muted/50 flex items-center justify-center text-6xl overflow-hidden">
                 {post.imageUrl ? (
@@ -81,9 +83,17 @@ const Blog = () => {
             >
               <ArrowLeft className="h-4 w-4" />
             </Button>
-            <span className="text-sm text-muted-foreground">
-              {page + 1} / {totalPages}
-            </span>
+            {Array.from({ length: totalPages }, (_, i) => (
+              <Button
+                key={i}
+                variant={page === i ? "default" : "outline"}
+                size="icon"
+                onClick={() => setPage(i)}
+                className={page === i ? "bg-primary text-primary-foreground" : "border-primary text-primary"}
+              >
+                {i + 1}
+              </Button>
+            ))}
             <Button
               variant="outline"
               size="icon"
@@ -96,6 +106,37 @@ const Blog = () => {
           </div>
         )}
       </div>
+
+      {/* Blog post modal */}
+      {openPost && (
+        <div className="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4" onClick={() => setOpenPost(null)}>
+          <div className="bg-card rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto relative animate-in fade-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
+            <Button variant="ghost" size="icon" className="absolute top-3 right-3 z-10" onClick={() => setOpenPost(null)}>
+              <X className="h-5 w-5" />
+            </Button>
+            {openPost.imageUrl ? (
+              <img src={openPost.imageUrl} alt={openPost.title} className="w-full h-48 object-cover rounded-t-2xl" />
+            ) : (
+              <div className="w-full h-48 bg-muted/50 flex items-center justify-center text-7xl rounded-t-2xl">
+                {openPost.emoji}
+              </div>
+            )}
+            <div className="p-8">
+              <span className="inline-block text-xs font-semibold uppercase tracking-wider text-accent-foreground bg-accent/20 px-3 py-1 rounded-full mb-3">
+                {openPost.category}
+              </span>
+              <h2 className="text-2xl md:text-3xl font-bold text-primary mb-4">{openPost.title}</h2>
+              <div className="flex items-center gap-4 text-sm text-muted-foreground mb-6">
+                <div className="flex items-center gap-1"><User className="h-4 w-4" />{openPost.author}</div>
+                <div className="flex items-center gap-1"><Calendar className="h-4 w-4" />{openPost.date}</div>
+              </div>
+              <div className="prose prose-green max-w-none text-foreground leading-relaxed">
+                <p>{openPost.content || openPost.excerpt}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 };

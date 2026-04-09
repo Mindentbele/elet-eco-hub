@@ -31,6 +31,23 @@ export interface EventItem {
   image: string;
 }
 
+export interface ValueItem {
+  id: number;
+  icon: string;
+  title: string;
+  description: string;
+}
+
+export interface FooterLink {
+  name: string;
+  url: string;
+}
+
+export interface SocialLink {
+  platform: string;
+  url: string;
+}
+
 export interface SiteTexts {
   heroTitle: string;
   heroSubtitle: string;
@@ -75,13 +92,40 @@ export const defaultTexts: SiteTexts = {
   footerDescription: "Önellátó életmód, hagyományőrzés és ökológiai tudatosság. Csatlakozz közösségünkhöz a fenntartható jövőért!",
 };
 
+export const defaultValues: ValueItem[] = [
+  { id: 1, icon: "Sprout", title: "Önellátás", description: "Saját élelmiszer termesztése, természetes alapanyagok használata és környezetbarát technológiák alkalmazása." },
+  { id: 2, icon: "Home", title: "Természetközeli Életmód", description: "Harmóniában élni a természettel, fenntartható építkezés és energiahasználat." },
+  { id: 3, icon: "BookOpen", title: "Hagyományőrzés", description: "Ősi mesterségek, népi tudás és kulturális értékek megőrzése és továbbadása." },
+  { id: 4, icon: "Users2", title: "Közösségépítés", description: "Együttműködés, tapasztalatcsere és kölcsönös támogatás a tagok között." },
+];
+
+export const defaultValuesList: string[] = [
+  "Környezettudatosság és fenntarthatóság",
+  "Közösségi összetartás és szolidaritás",
+  "Hagyományok tisztelete és megőrzése",
+  "Önállóság és függetlenség",
+  "Tanulás és tudásmegosztás",
+];
+
+export const defaultFooterLinks: FooterLink[] = [
+  { name: "Adatvédelmi szabályzat", url: "#" },
+  { name: "Felhasználási feltételek", url: "#" },
+  { name: "Kötelező jelentések", url: "#" },
+];
+
+export const defaultSocialLinks: SocialLink[] = [
+  { platform: "Facebook", url: "#" },
+  { platform: "Instagram", url: "#" },
+  { platform: "Youtube", url: "#" },
+];
+
 export const defaultBlogPosts: BlogPost[] = [
-  { id: 1, title: "Hogyan kezdj el konyhakerti gazdálkodni?", excerpt: "Tippek és trükkök kezdőknek az otthoni kertgazdálkodáshoz.", date: "2024. szeptember 20.", author: "Kovács Anna", category: "Kertészkedés", emoji: "🌱" },
-  { id: 2, title: "Hagyományos tartósítási módszerek", excerpt: "Őseink is ismerték: fermentálás, szárítás, füstölés.", date: "2024. szeptember 15.", author: "Nagy Péter", category: "Hagyomány", emoji: "🫙" },
-  { id: 3, title: "Fenntartható építkezés természetes anyagokból", excerpt: "Vályog, szalma, fa — hogyan építsünk környezetbarát otthont?", date: "2024. szeptember 10.", author: "Tóth László", category: "Építkezés", emoji: "🏡" },
-  { id: 4, title: "Gyógynövények a házi patikában", excerpt: "A legfontosabb gyógynövények és felhasználásuk.", date: "2024. augusztus 28.", author: "Szabó Éva", category: "Egészség", emoji: "🌿" },
-  { id: 5, title: "Közösségi gazdálkodás: együtt könnyebb", excerpt: "Hogyan szervezzünk közösségi kertet?", date: "2024. augusztus 20.", author: "Molnár Gábor", category: "Közösség", emoji: "🤝" },
-  { id: 6, title: "Esővíz gyűjtés és felhasználás", excerpt: "Lépésről lépésre útmutató az esővíz gyűjtő rendszer kialakításához.", date: "2024. augusztus 12.", author: "Kiss Judit", category: "Fenntarthatóság", emoji: "💧" },
+  { id: 1, title: "Hogyan kezdj el konyhakerti gazdálkodni?", excerpt: "Tippek és trükkök kezdőknek az otthoni kertgazdálkodáshoz.", content: "A konyhakerti gazdálkodás az egyik legjobb módja annak, hogy friss, egészséges zöldségeket termesszünk otthon. Kezdjük a tervezéssel: válasszuk ki a megfelelő helyet, ahol elegendő napfény éri a kertet. A talaj előkészítése kulcsfontosságú – komposztáljunk és javítsuk a talaj minőségét természetes módszerekkel.", date: "2024. szeptember 20.", author: "Kovács Anna", category: "Kertészkedés", emoji: "🌱" },
+  { id: 2, title: "Hagyományos tartósítási módszerek", excerpt: "Őseink is ismerték: fermentálás, szárítás, füstölés.", content: "A tartósítás művészete évezredek óta velünk él. A fermentálás nemcsak megőrzi az ételeket, de gazdagítja is probiotikumokkal. A szárítás egyszerű és hatékony módszer, különösen gyümölcsök és gyógynövények esetén. A füstölés pedig egyedi ízt ad a húsoknak és sajtoknak.", date: "2024. szeptember 15.", author: "Nagy Péter", category: "Hagyomány", emoji: "🫙" },
+  { id: 3, title: "Fenntartható építkezés természetes anyagokból", excerpt: "Vályog, szalma, fa — hogyan építsünk környezetbarát otthont?", content: "A természetes építőanyagok használata egyre népszerűbb. A vályogház kiváló hőszigetelést biztosít, a szalmaház pedig meglepően tartós és energiahatékony. A fa építkezés hagyományos és megújuló megoldás.", date: "2024. szeptember 10.", author: "Tóth László", category: "Építkezés", emoji: "🏡" },
+  { id: 4, title: "Gyógynövények a házi patikában", excerpt: "A legfontosabb gyógynövények és felhasználásuk.", content: "A gyógynövények évezredek óta szolgálják az emberiséget. A kamilla nyugtató hatású, a borsmenta segít az emésztésben, a levendula pedig relaxál. Ismerjük meg közelebbről ezeket a csodálatos növényeket!", date: "2024. augusztus 28.", author: "Szabó Éva", category: "Egészség", emoji: "🌿" },
+  { id: 5, title: "Közösségi gazdálkodás: együtt könnyebb", excerpt: "Hogyan szervezzünk közösségi kertet?", content: "A közösségi kertek nemcsak élelmet termelnek, hanem közösséget is építenek. A szervezés első lépése a megfelelő terület kiválasztása, majd a résztvevők toborzása és a feladatok elosztása.", date: "2024. augusztus 20.", author: "Molnár Gábor", category: "Közösség", emoji: "🤝" },
+  { id: 6, title: "Esővíz gyűjtés és felhasználás", excerpt: "Lépésről lépésre útmutató az esővíz gyűjtő rendszer kialakításához.", content: "Az esővíz gyűjtés egyszerű és hatékony módja a vízmegtakarításnak. Egy alaprendszer telepítéséhez szükségünk van ereszcsatornára, szűrőre és tárolóedényre. Az összegyűjtött vizet öntözésre, takarításra és WC-öblítésre is felhasználhatjuk.", date: "2024. augusztus 12.", author: "Kiss Judit", category: "Fenntarthatóság", emoji: "💧" },
 ];
 
 export const defaultGalleryItems: GalleryItem[] = [
@@ -131,6 +175,18 @@ export const siteData = {
 
   getNavItems: () => getItem<NavItem[]>("navItems", defaultNavItems),
   setNavItems: (n: NavItem[]) => setItem("navItems", n),
+
+  getValues: () => getItem<ValueItem[]>("siteValues", defaultValues),
+  setValues: (v: ValueItem[]) => setItem("siteValues", v),
+
+  getValuesList: () => getItem<string[]>("siteValuesList", defaultValuesList),
+  setValuesList: (v: string[]) => setItem("siteValuesList", v),
+
+  getFooterLinks: () => getItem<FooterLink[]>("footerLinks", defaultFooterLinks),
+  setFooterLinks: (l: FooterLink[]) => setItem("footerLinks", l),
+
+  getSocialLinks: () => getItem<SocialLink[]>("socialLinks", defaultSocialLinks),
+  setSocialLinks: (s: SocialLink[]) => setItem("socialLinks", s),
 
   getLogo: () => localStorage.getItem("siteLogoUrl"),
   setLogo: (url: string) => localStorage.setItem("siteLogoUrl", url),

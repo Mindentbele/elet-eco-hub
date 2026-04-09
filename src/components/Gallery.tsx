@@ -1,14 +1,17 @@
 import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { X, ArrowLeft, ArrowRight } from "lucide-react";
 import { siteData, defaultGalleryItems, type GalleryItem } from "@/lib/siteData";
 import { useAnimateOnScroll } from "@/hooks/useAnimateOnScroll";
+
+const ITEMS_PER_PAGE = 8;
 
 const Gallery = () => {
   const [items, setItems] = useState<GalleryItem[]>([]);
   const [filter, setFilter] = useState("Összes");
   const [lightbox, setLightbox] = useState<number | null>(null);
+  const [page, setPage] = useState(0);
   const { ref, isVisible } = useAnimateOnScroll();
 
   useEffect(() => {
@@ -18,7 +21,12 @@ const Gallery = () => {
 
   const categories = ["Összes", ...Array.from(new Set(items.map((i) => i.category)))];
   const filtered = filter === "Összes" ? items : items.filter((i) => i.category === filter);
+  const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+  const visible = filtered.slice(page * ITEMS_PER_PAGE, (page + 1) * ITEMS_PER_PAGE);
   const active = lightbox !== null ? items.find((i) => i.id === lightbox) : null;
+
+  // Reset page when filter changes
+  useEffect(() => { setPage(0); }, [filter]);
 
   return (
     <section id="gallery" className="py-20 bg-muted/30">
@@ -48,7 +56,7 @@ const Gallery = () => {
         </div>
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-          {filtered.map((item, i) => (
+          {visible.map((item, i) => (
             <Card
               key={item.id}
               className="aspect-square flex flex-col items-center justify-center cursor-pointer hover:shadow-organic transition-all duration-500 group overflow-hidden"
@@ -67,9 +75,21 @@ const Gallery = () => {
           ))}
         </div>
 
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-4 mt-8">
+            <Button variant="outline" size="icon" disabled={page === 0} onClick={() => setPage(page - 1)} className="border-primary text-primary">
+              <ArrowLeft className="h-4 w-4" />
+            </Button>
+            <span className="text-sm text-muted-foreground">{page + 1} / {totalPages}</span>
+            <Button variant="outline" size="icon" disabled={page >= totalPages - 1} onClick={() => setPage(page + 1)} className="border-primary text-primary">
+              <ArrowRight className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+
         {active && (
           <div className="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4" onClick={() => setLightbox(null)}>
-            <div className="bg-card rounded-2xl p-8 max-w-md w-full text-center relative animate-scale-in" onClick={(e) => e.stopPropagation()}>
+            <div className="bg-card rounded-2xl p-8 max-w-md w-full text-center relative animate-in fade-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
               <Button variant="ghost" size="icon" className="absolute top-2 right-2" onClick={() => setLightbox(null)}>
                 <X className="h-5 w-5" />
               </Button>

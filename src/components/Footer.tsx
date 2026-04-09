@@ -1,20 +1,29 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Facebook, Instagram, Youtube } from "lucide-react";
+import { Mail, Phone, MapPin, Facebook, Instagram, Youtube, Map } from "lucide-react";
 import logoDefault from "@/assets/logo-default.svg";
-import { siteData, defaultTexts } from "@/lib/siteData";
+import { siteData, defaultTexts, defaultFooterLinks, defaultSocialLinks, type FooterLink, type SocialLink } from "@/lib/siteData";
 import { useAnimateOnScroll } from "@/hooks/useAnimateOnScroll";
+
+const socialIconMap: Record<string, React.ElementType> = { Facebook, Instagram, Youtube };
 
 const Footer = () => {
   const [logoUrl, setLogoUrl] = useState<string | null>(null);
   const [texts, setTexts] = useState(defaultTexts);
+  const [footerLinks, setFooterLinks] = useState<FooterLink[]>(defaultFooterLinks);
+  const [socialLinks, setSocialLinks] = useState<SocialLink[]>(defaultSocialLinks);
+  const [showMap, setShowMap] = useState(false);
   const { ref, isVisible } = useAnimateOnScroll();
 
   useEffect(() => {
     const stored = siteData.getLogo();
     if (stored) setLogoUrl(stored);
     setTexts(siteData.getTexts());
+    setFooterLinks(siteData.getFooterLinks());
+    setSocialLinks(siteData.getSocialLinks());
   }, []);
+
+  const mapQuery = encodeURIComponent(texts.contactAddress);
 
   return (
     <footer id="contact" className="bg-primary text-primary-foreground">
@@ -49,20 +58,37 @@ const Footer = () => {
               <div className="flex items-center space-x-2"><Mail className="h-4 w-4" /><span className="text-primary-foreground/80">{texts.contactEmail}</span></div>
               <div className="flex items-center space-x-2"><Phone className="h-4 w-4" /><span className="text-primary-foreground/80">{texts.contactPhone}</span></div>
               <div className="flex items-center space-x-2"><MapPin className="h-4 w-4" /><span className="text-primary-foreground/80">{texts.contactAddress}</span></div>
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-primary-foreground/80 hover:text-warm-gold hover:bg-primary-foreground/10 p-0 h-auto mt-1"
+                onClick={() => setShowMap(true)}
+              >
+                <Map className="h-4 w-4 mr-1" /> Térkép megnyitása
+              </Button>
             </div>
           </div>
 
           <div>
             <h4 className="text-lg font-semibold mb-4">Kövess minket</h4>
             <div className="flex space-x-3 mb-6">
-              <Button size="icon" variant="ghost" className="text-primary-foreground hover:text-warm-gold hover:bg-primary-foreground/10"><Facebook className="h-5 w-5" /></Button>
-              <Button size="icon" variant="ghost" className="text-primary-foreground hover:text-warm-gold hover:bg-primary-foreground/10"><Instagram className="h-5 w-5" /></Button>
-              <Button size="icon" variant="ghost" className="text-primary-foreground hover:text-warm-gold hover:bg-primary-foreground/10"><Youtube className="h-5 w-5" /></Button>
+              {socialLinks.map((s) => {
+                const Icon = socialIconMap[s.platform] || Facebook;
+                return (
+                  <a key={s.platform} href={s.url} target="_blank" rel="noopener noreferrer">
+                    <Button size="icon" variant="ghost" className="text-primary-foreground hover:text-warm-gold hover:bg-primary-foreground/10">
+                      <Icon className="h-5 w-5" />
+                    </Button>
+                  </a>
+                );
+              })}
             </div>
             <div className="space-y-2">
-              <a href="#" className="text-primary-foreground/80 hover:text-warm-gold transition-colors block text-sm">Adatvédelmi szabályzat</a>
-              <a href="#" className="text-primary-foreground/80 hover:text-warm-gold transition-colors block text-sm">Felhasználási feltételek</a>
-              <a href="#" className="text-primary-foreground/80 hover:text-warm-gold transition-colors block text-sm">Kötelező jelentések</a>
+              {footerLinks.map((link) => (
+                <a key={link.name} href={link.url} target={link.url.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-warm-gold transition-colors block text-sm">
+                  {link.name}
+                </a>
+              ))}
             </div>
           </div>
         </div>
@@ -71,6 +97,28 @@ const Footer = () => {
           <p className="text-primary-foreground/60">© 2024 ÉLET-Közösség Egyesület. Minden jog fenntartva.</p>
         </div>
       </div>
+
+      {/* Map modal */}
+      {showMap && (
+        <div className="fixed inset-0 z-[60] bg-black/80 flex items-center justify-center p-4" onClick={() => setShowMap(false)}>
+          <div className="bg-card rounded-2xl overflow-hidden max-w-3xl w-full relative animate-in fade-in zoom-in-95" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="text-lg font-bold text-primary">📍 {texts.contactAddress}</h3>
+              <Button variant="ghost" size="sm" onClick={() => setShowMap(false)}>✕</Button>
+            </div>
+            <iframe
+              src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyBFw0Qbyq9zTFTd-tUY6dZWTgaQzuU17R8&q=${mapQuery}`}
+              width="100%"
+              height="450"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              title="Térkép"
+            />
+          </div>
+        </div>
+      )}
     </footer>
   );
 };

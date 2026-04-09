@@ -1,23 +1,22 @@
 import { useEffect, useState } from "react";
 import { Card } from "@/components/ui/card";
 import { Sprout, Home, BookOpen, Users2 } from "lucide-react";
-import { siteData, defaultTexts } from "@/lib/siteData";
+import { siteData, defaultTexts, defaultValues, defaultValuesList, type ValueItem } from "@/lib/siteData";
 import { useAnimateOnScroll } from "@/hooks/useAnimateOnScroll";
+
+const iconMap: Record<string, React.ElementType> = { Sprout, Home, BookOpen, Users2 };
 
 const About = () => {
   const [texts, setTexts] = useState(defaultTexts);
+  const [values, setValues] = useState<ValueItem[]>(defaultValues);
+  const [valuesList, setValuesList] = useState<string[]>(defaultValuesList);
   const { ref, isVisible } = useAnimateOnScroll();
 
   useEffect(() => {
     setTexts(siteData.getTexts());
+    setValues(siteData.getValues());
+    setValuesList(siteData.getValuesList());
   }, []);
-
-  const values = [
-    { icon: Sprout, title: "Önellátás", description: "Saját élelmiszer termesztése, természetes alapanyagok használata és környezetbarát technológiák alkalmazása." },
-    { icon: Home, title: "Természetközeli Életmód", description: "Harmóniában élni a természettel, fenntartható építkezés és energiahasználat." },
-    { icon: BookOpen, title: "Hagyományőrzés", description: "Ősi mesterségek, népi tudás és kulturális értékek megőrzése és továbbadása." },
-    { icon: Users2, title: "Közösségépítés", description: "Együttműködés, tapasztalatcsere és kölcsönös támogatás a tagok között." },
-  ];
 
   return (
     <section id="about" className="py-20 bg-muted/30">
@@ -33,13 +32,16 @@ const About = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
-          {values.map((value, index) => (
-            <Card key={index} className="p-6 text-center hover:shadow-organic transition-all duration-300 border-border/50 hover:-translate-y-1">
-              <value.icon className="h-12 w-12 text-primary mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-primary mb-3">{value.title}</h3>
-              <p className="text-muted-foreground">{value.description}</p>
-            </Card>
-          ))}
+          {values.map((value, index) => {
+            const Icon = iconMap[value.icon] || Sprout;
+            return (
+              <Card key={value.id || index} className="p-6 text-center hover:shadow-organic transition-all duration-300 border-border/50 hover:-translate-y-1">
+                <Icon className="h-12 w-12 text-primary mx-auto mb-4" />
+                <h3 className="text-xl font-semibold text-primary mb-3">{value.title}</h3>
+                <p className="text-muted-foreground">{value.description}</p>
+              </Card>
+            );
+          })}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
@@ -54,7 +56,7 @@ const About = () => {
           <div className="bg-nature-gradient p-8 rounded-2xl text-white">
             <h4 className="text-xl font-bold mb-4">Értékeink</h4>
             <ul className="space-y-3">
-              {["Környezettudatosság és fenntarthatóság", "Közösségi összetartás és szolidaritás", "Hagyományok tisztelete és megőrzése", "Önállóság és függetlenség", "Tanulás és tudásmegosztás"].map((v) => (
+              {valuesList.map((v) => (
                 <li key={v} className="flex items-center">
                   <div className="w-2 h-2 bg-warm-gold rounded-full mr-3"></div>
                   {v}

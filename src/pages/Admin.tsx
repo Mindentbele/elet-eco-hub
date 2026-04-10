@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, Plus, Trash2, LogIn, Upload, Image } from "lucide-react";
+import { ArrowLeft, Save, Plus, Trash2, LogIn, Upload, Image, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   siteData,
@@ -22,6 +22,7 @@ import {
   type ValueItem,
   type FooterLink,
   type SocialLink,
+  type NewsletterSubscriber,
 } from "@/lib/siteData";
 
 const ADMIN_PASS = "elet2024";
@@ -76,6 +77,7 @@ const Admin = () => {
             <TabsTrigger value="events">Események</TabsTrigger>
             <TabsTrigger value="nav">Menü</TabsTrigger>
             <TabsTrigger value="footer">Lábléc linkek</TabsTrigger>
+            <TabsTrigger value="subscribers">Feliratkozók</TabsTrigger>
             <TabsTrigger value="logo">Logó</TabsTrigger>
           </TabsList>
 
@@ -86,6 +88,7 @@ const Admin = () => {
           <TabsContent value="events"><EventsEditor /></TabsContent>
           <TabsContent value="nav"><NavEditor /></TabsContent>
           <TabsContent value="footer"><FooterLinksEditor /></TabsContent>
+          <TabsContent value="subscribers"><SubscribersViewer /></TabsContent>
           <TabsContent value="logo"><LogoEditor /></TabsContent>
         </Tabs>
       </div>
@@ -462,6 +465,62 @@ function LogoEditor() {
         </div>
       </div>
       <p className="text-sm text-muted-foreground">PNG vagy SVG formátum ajánlott, átlátszó háttérrel.</p>
+    </Card>
+  );
+}
+
+// ---- Subscribers Viewer ----
+function SubscribersViewer() {
+  const [subscribers, setSubscribers] = useState<NewsletterSubscriber[]>([]);
+  const { toast } = useToast();
+
+  useEffect(() => { setSubscribers(siteData.getSubscribers()); }, []);
+
+  const remove = (id: number) => {
+    const updated = subscribers.filter((s) => s.id !== id);
+    setSubscribers(updated);
+    siteData.setSubscribers(updated);
+    toast({ title: "Feliratkozó törölve!" });
+  };
+
+  const exportCSV = () => {
+    const csv = "Email,Dátum\n" + subscribers.map((s) => `${s.email},${s.date}`).join("\n");
+    const blob = new Blob([csv], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "feliratkozok.csv";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  return (
+    <Card className="p-6 space-y-4">
+      <div className="flex items-center justify-between">
+        <h2 className="text-xl font-bold text-primary">Hírlevél feliratkozók ({subscribers.length})</h2>
+        {subscribers.length > 0 && (
+          <Button onClick={exportCSV} variant="outline" size="sm">
+            <Save className="mr-1 h-4 w-4" /> CSV export
+          </Button>
+        )}
+      </div>
+      {subscribers.length === 0 ? (
+        <p className="text-muted-foreground">Még nincs feliratkozó.</p>
+      ) : (
+        <div className="space-y-2">
+          {subscribers.map((s) => (
+            <div key={s.id} className="flex items-center justify-between border rounded-lg p-3">
+              <div>
+                <span className="font-medium">{s.email}</span>
+                <span className="text-sm text-muted-foreground ml-3">{s.date}</span>
+              </div>
+              <Button variant="ghost" size="icon" className="text-destructive shrink-0" onClick={() => remove(s.id)}>
+                <Trash2 className="h-4 w-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+      )}
     </Card>
   );
 }

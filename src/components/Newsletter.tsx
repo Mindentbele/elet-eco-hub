@@ -19,7 +19,12 @@ const Newsletter = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      toast({ title: "Sikeres feliratkozás!", description: "Köszönjük, hogy feliratkoztál hírlevelünkre." });
+      const added = siteData.addSubscriber(email);
+      if (added) {
+        toast({ title: "Sikeres feliratkozás!", description: "Köszönjük, hogy feliratkoztál hírlevelünkre." });
+      } else {
+        toast({ title: "Már feliratkoztál!", description: "Ezzel az email címmel már korábban feliratkoztál." });
+      }
       setEmail("");
     }
   };

@@ -48,6 +48,12 @@ export interface SocialLink {
   url: string;
 }
 
+export interface NewsletterSubscriber {
+  id: number;
+  email: string;
+  date: string;
+}
+
 export interface SiteTexts {
   heroTitle: string;
   heroSubtitle: string;
@@ -191,4 +197,14 @@ export const siteData = {
   getLogo: () => localStorage.getItem("siteLogoUrl"),
   setLogo: (url: string) => localStorage.setItem("siteLogoUrl", url),
   clearLogo: () => localStorage.removeItem("siteLogoUrl"),
+
+  getSubscribers: () => getItem<NewsletterSubscriber[]>("newsletterSubscribers", []),
+  setSubscribers: (s: NewsletterSubscriber[]) => setItem("newsletterSubscribers", s),
+  addSubscriber: (email: string) => {
+    const subs = getItem<NewsletterSubscriber[]>("newsletterSubscribers", []);
+    if (subs.some((s) => s.email === email)) return false;
+    subs.unshift({ id: Date.now(), email, date: new Date().toLocaleDateString("hu-HU", { year: "numeric", month: "long", day: "numeric" }) + "." });
+    setItem("newsletterSubscribers", subs);
+    return true;
+  },
 };

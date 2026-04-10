@@ -88,6 +88,7 @@ const Admin = () => {
           <TabsContent value="events"><EventsEditor /></TabsContent>
           <TabsContent value="nav"><NavEditor /></TabsContent>
           <TabsContent value="footer"><FooterLinksEditor /></TabsContent>
+          <TabsContent value="subscribers"><SubscribersViewer /></TabsContent>
           <TabsContent value="logo"><LogoEditor /></TabsContent>
         </Tabs>
       </div>

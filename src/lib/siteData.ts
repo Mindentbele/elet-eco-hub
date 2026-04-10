@@ -48,6 +48,12 @@ export interface SocialLink {
   url: string;
 }
 
+export interface NewsletterSubscriber {
+  id: number;
+  email: string;
+  date: string;
+}
+
 export interface SiteTexts {
   heroTitle: string;
   heroSubtitle: string;

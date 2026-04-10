@@ -77,6 +77,7 @@ const Admin = () => {
             <TabsTrigger value="events">Események</TabsTrigger>
             <TabsTrigger value="nav">Menü</TabsTrigger>
             <TabsTrigger value="footer">Lábléc linkek</TabsTrigger>
+            <TabsTrigger value="subscribers">Feliratkozók</TabsTrigger>
             <TabsTrigger value="logo">Logó</TabsTrigger>
           </TabsList>
 

@@ -5,7 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
-import { ArrowLeft, Save, Plus, Trash2, LogIn, Upload, Image } from "lucide-react";
+import { ArrowLeft, Save, Plus, Trash2, LogIn, Upload, Image, Users } from "lucide-react";
 import { Link } from "react-router-dom";
 import {
   siteData,
@@ -22,6 +22,7 @@ import {
   type ValueItem,
   type FooterLink,
   type SocialLink,
+  type NewsletterSubscriber,
 } from "@/lib/siteData";
 
 const ADMIN_PASS = "elet2024";

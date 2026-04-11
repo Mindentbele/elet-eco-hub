@@ -14,6 +14,7 @@ import {
   defaultValuesList,
   defaultFooterLinks,
   defaultSocialLinks,
+  defaultLegalPages,
   type SiteTexts,
   type BlogPost,
   type GalleryItem,
@@ -23,18 +24,29 @@ import {
   type FooterLink,
   type SocialLink,
   type NewsletterSubscriber,
+  type LegalPages,
 } from "@/lib/siteData";
 
-const ADMIN_PASS = "elet2024";
+// SHA-256 hash of the password "elet2024"
+const ADMIN_PASS_HASH = "1b490459cbef7bef3e6a357f6e929c48d62caed9bd3c01e5a48d274c81afd2ac";
+
+async function hashPassword(pass: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pass);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 const Admin = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [password, setPassword] = useState("");
   const { toast } = useToast();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASS) {
+    const hashed = await hashPassword(password);
+    if (hashed === ADMIN_PASS_HASH) {
       setLoggedIn(true);
     } else {
       toast({ title: "Hibás jelszó!", variant: "destructive" });
@@ -77,6 +89,7 @@ const Admin = () => {
             <TabsTrigger value="events">Események</TabsTrigger>
             <TabsTrigger value="nav">Menü</TabsTrigger>
             <TabsTrigger value="footer">Lábléc linkek</TabsTrigger>
+            <TabsTrigger value="legal">Jogi oldalak</TabsTrigger>
             <TabsTrigger value="subscribers">Feliratkozók</TabsTrigger>
             <TabsTrigger value="logo">Logó</TabsTrigger>
           </TabsList>
@@ -88,6 +101,7 @@ const Admin = () => {
           <TabsContent value="events"><EventsEditor /></TabsContent>
           <TabsContent value="nav"><NavEditor /></TabsContent>
           <TabsContent value="footer"><FooterLinksEditor /></TabsContent>
+          <TabsContent value="legal"><LegalPagesEditor /></TabsContent>
           <TabsContent value="subscribers"><SubscribersViewer /></TabsContent>
           <TabsContent value="logo"><LogoEditor /></TabsContent>
         </Tabs>
@@ -521,6 +535,56 @@ function SubscribersViewer() {
           ))}
         </div>
       )}
+    </Card>
+  );
+}
+
+// ---- Legal Pages Editor ----
+function LegalPagesEditor() {
+  const [pages, setPages] = useState<LegalPages>(defaultLegalPages);
+  const { toast } = useToast();
+
+  useEffect(() => { setPages(siteData.getLegalPages()); }, []);
+
+  const save = () => { siteData.setLegalPages(pages); toast({ title: "Jogi oldalak mentve!" }); };
+
+  const updatePage = (key: string, field: "content" | "pdfUrl", value: string) => {
+    setPages({ ...pages, [key]: { ...pages[key], [field]: value } });
+  };
+
+  const pageLabels: Record<string, string> = {
+    privacy: "Adatvédelmi szabályzat",
+    terms: "Felhasználási feltételek",
+    reports: "Kötelező jelentések",
+  };
+
+  return (
+    <Card className="p-6 space-y-6">
+      <h2 className="text-xl font-bold text-primary">Jogi oldalak szerkesztése</h2>
+      <p className="text-sm text-muted-foreground">Írd be a szöveges tartalmat és/vagy add meg a PDF fájl URL-jét (amit a cPanel-re töltöttél fel, pl. https://elet-kozosseg.net/docs/adatvedelem.pdf)</p>
+      {Object.entries(pageLabels).map(([key, label]) => (
+        <Card key={key} className="p-4 space-y-3 border-border">
+          <h3 className="text-lg font-semibold text-primary">{label}</h3>
+          <div>
+            <label className="text-sm font-medium text-foreground">PDF URL (opcionális)</label>
+            <Input
+              value={pages[key]?.pdfUrl || ""}
+              onChange={(e) => updatePage(key, "pdfUrl", e.target.value)}
+              placeholder="https://elet-kozosseg.net/docs/fajlnev.pdf"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-foreground">Szöveges tartalom</label>
+            <Textarea
+              value={pages[key]?.content || ""}
+              onChange={(e) => updatePage(key, "content", e.target.value)}
+              placeholder="Írd ide a teljes szöveget..."
+              rows={10}
+            />
+          </div>
+        </Card>
+      ))}
+      <Button onClick={save} className="bg-primary"><Save className="mr-2 h-4 w-4" /> Jogi oldalak mentése</Button>
     </Card>
   );
 }

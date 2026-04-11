@@ -43,6 +43,15 @@ export interface FooterLink {
   url: string;
 }
 
+export interface LegalPage {
+  content: string;
+  pdfUrl: string;
+}
+
+export interface LegalPages {
+  [key: string]: LegalPage;
+}
+
 export interface SocialLink {
   platform: string;
   url: string;
@@ -114,10 +123,16 @@ export const defaultValuesList: string[] = [
 ];
 
 export const defaultFooterLinks: FooterLink[] = [
-  { name: "Adatvédelmi szabályzat", url: "#" },
-  { name: "Felhasználási feltételek", url: "#" },
-  { name: "Kötelező jelentések", url: "#" },
+  { name: "Adatvédelmi szabályzat", url: "/adatvedelmi-szabalyzat" },
+  { name: "Felhasználási feltételek", url: "/felhasznalasi-feltetelek" },
+  { name: "Kötelező jelentések", url: "/kotelezo-jelentesek" },
 ];
+
+export const defaultLegalPages: LegalPages = {
+  privacy: { content: "", pdfUrl: "" },
+  terms: { content: "", pdfUrl: "" },
+  reports: { content: "", pdfUrl: "" },
+};
 
 export const defaultSocialLinks: SocialLink[] = [
   { platform: "Facebook", url: "#" },
@@ -197,6 +212,9 @@ export const siteData = {
   getLogo: () => localStorage.getItem("siteLogoUrl"),
   setLogo: (url: string) => localStorage.setItem("siteLogoUrl", url),
   clearLogo: () => localStorage.removeItem("siteLogoUrl"),
+
+  getLegalPages: () => getItem<LegalPages>("legalPages", defaultLegalPages),
+  setLegalPages: (p: LegalPages) => setItem("legalPages", p),
 
   getSubscribers: () => getItem<NewsletterSubscriber[]>("newsletterSubscribers", []),
   setSubscribers: (s: NewsletterSubscriber[]) => setItem("newsletterSubscribers", s),

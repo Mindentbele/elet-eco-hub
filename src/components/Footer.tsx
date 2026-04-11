@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone, MapPin, Facebook, Instagram, Youtube, Map } from "lucide-react";
 import logoDefault from "@/assets/logo-default.svg";
@@ -84,11 +85,18 @@ const Footer = () => {
               })}
             </div>
             <div className="space-y-2">
-              {footerLinks.map((link) => (
-                <a key={link.name} href={link.url} target={link.url.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-warm-gold transition-colors block text-sm">
-                  {link.name}
-                </a>
-              ))}
+              {footerLinks.map((link) => {
+                const isExternal = link.url.startsWith("http");
+                return isExternal ? (
+                  <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer" className="text-primary-foreground/80 hover:text-warm-gold transition-colors block text-sm">
+                    {link.name}
+                  </a>
+                ) : (
+                  <Link key={link.name} to={link.url} className="text-primary-foreground/80 hover:text-warm-gold transition-colors block text-sm">
+                    {link.name}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </div>

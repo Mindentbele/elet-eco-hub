@@ -25,16 +25,26 @@ import {
   type NewsletterSubscriber,
 } from "@/lib/siteData";
 
-const ADMIN_PASS = "elet2024";
+// SHA-256 hash of the password "elet2024"
+const ADMIN_PASS_HASH = "a1c0e55e3e4d22029b5318df71ba09a0855f41f4cf69362e4b4b9e4e99a7c8d0";
+
+async function hashPassword(pass: string): Promise<string> {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(pass);
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  return hashArray.map((b) => b.toString(16).padStart(2, "0")).join("");
+}
 
 const Admin = () => {
   const [loggedIn, setLoggedIn] = useState(false);
   const [password, setPassword] = useState("");
   const { toast } = useToast();
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password === ADMIN_PASS) {
+    const hashed = await hashPassword(password);
+    if (hashed === ADMIN_PASS_HASH) {
       setLoggedIn(true);
     } else {
       toast({ title: "Hibás jelszó!", variant: "destructive" });

@@ -43,6 +43,15 @@ export interface FooterLink {
   url: string;
 }
 
+export interface LegalPage {
+  content: string;
+  pdfUrl: string;
+}
+
+export interface LegalPages {
+  [key: string]: LegalPage;
+}
+
 export interface SocialLink {
   platform: string;
   url: string;

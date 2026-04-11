@@ -123,10 +123,16 @@ export const defaultValuesList: string[] = [
 ];
 
 export const defaultFooterLinks: FooterLink[] = [
-  { name: "Adatvédelmi szabályzat", url: "#" },
-  { name: "Felhasználási feltételek", url: "#" },
-  { name: "Kötelező jelentések", url: "#" },
+  { name: "Adatvédelmi szabályzat", url: "/adatvedelmi-szabalyzat" },
+  { name: "Felhasználási feltételek", url: "/felhasznalasi-feltetelek" },
+  { name: "Kötelező jelentések", url: "/kotelezo-jelentesek" },
 ];
+
+export const defaultLegalPages: LegalPages = {
+  privacy: { content: "", pdfUrl: "" },
+  terms: { content: "", pdfUrl: "" },
+  reports: { content: "", pdfUrl: "" },
+};
 
 export const defaultSocialLinks: SocialLink[] = [
   { platform: "Facebook", url: "#" },

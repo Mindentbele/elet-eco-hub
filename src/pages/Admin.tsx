@@ -539,4 +539,54 @@ function SubscribersViewer() {
   );
 }
 
+// ---- Legal Pages Editor ----
+function LegalPagesEditor() {
+  const [pages, setPages] = useState<LegalPages>(defaultLegalPages);
+  const { toast } = useToast();
+
+  useEffect(() => { setPages(siteData.getLegalPages()); }, []);
+
+  const save = () => { siteData.setLegalPages(pages); toast({ title: "Jogi oldalak mentve!" }); };
+
+  const updatePage = (key: string, field: "content" | "pdfUrl", value: string) => {
+    setPages({ ...pages, [key]: { ...pages[key], [field]: value } });
+  };
+
+  const pageLabels: Record<string, string> = {
+    privacy: "Adatvédelmi szabályzat",
+    terms: "Felhasználási feltételek",
+    reports: "Kötelező jelentések",
+  };
+
+  return (
+    <Card className="p-6 space-y-6">
+      <h2 className="text-xl font-bold text-primary">Jogi oldalak szerkesztése</h2>
+      <p className="text-sm text-muted-foreground">Írd be a szöveges tartalmat és/vagy add meg a PDF fájl URL-jét (amit a cPanel-re töltöttél fel, pl. https://elet-kozosseg.net/docs/adatvedelem.pdf)</p>
+      {Object.entries(pageLabels).map(([key, label]) => (
+        <Card key={key} className="p-4 space-y-3 border-border">
+          <h3 className="text-lg font-semibold text-primary">{label}</h3>
+          <div>
+            <label className="text-sm font-medium text-foreground">PDF URL (opcionális)</label>
+            <Input
+              value={pages[key]?.pdfUrl || ""}
+              onChange={(e) => updatePage(key, "pdfUrl", e.target.value)}
+              placeholder="https://elet-kozosseg.net/docs/fajlnev.pdf"
+            />
+          </div>
+          <div>
+            <label className="text-sm font-medium text-foreground">Szöveges tartalom</label>
+            <Textarea
+              value={pages[key]?.content || ""}
+              onChange={(e) => updatePage(key, "content", e.target.value)}
+              placeholder="Írd ide a teljes szöveget..."
+              rows={10}
+            />
+          </div>
+        </Card>
+      ))}
+      <Button onClick={save} className="bg-primary"><Save className="mr-2 h-4 w-4" /> Jogi oldalak mentése</Button>
+    </Card>
+  );
+}
+
 export default Admin;

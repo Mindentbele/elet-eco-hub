@@ -213,6 +213,9 @@ export const siteData = {
   setLogo: (url: string) => localStorage.setItem("siteLogoUrl", url),
   clearLogo: () => localStorage.removeItem("siteLogoUrl"),
 
+  getLegalPages: () => getItem<LegalPages>("legalPages", defaultLegalPages),
+  setLegalPages: (p: LegalPages) => setItem("legalPages", p),
+
   getSubscribers: () => getItem<NewsletterSubscriber[]>("newsletterSubscribers", []),
   setSubscribers: (s: NewsletterSubscriber[]) => setItem("newsletterSubscribers", s),
   addSubscriber: (email: string) => {

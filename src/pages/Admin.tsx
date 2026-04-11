@@ -14,6 +14,7 @@ import {
   defaultValuesList,
   defaultFooterLinks,
   defaultSocialLinks,
+  defaultLegalPages,
   type SiteTexts,
   type BlogPost,
   type GalleryItem,
@@ -23,10 +24,11 @@ import {
   type FooterLink,
   type SocialLink,
   type NewsletterSubscriber,
+  type LegalPages,
 } from "@/lib/siteData";
 
 // SHA-256 hash of the password "elet2024"
-const ADMIN_PASS_HASH = "a1c0e55e3e4d22029b5318df71ba09a0855f41f4cf69362e4b4b9e4e99a7c8d0";
+const ADMIN_PASS_HASH = "1b490459cbef7bef3e6a357f6e929c48d62caed9bd3c01e5a48d274c81afd2ac";
 
 async function hashPassword(pass: string): Promise<string> {
   const encoder = new TextEncoder();
@@ -87,6 +89,7 @@ const Admin = () => {
             <TabsTrigger value="events">Események</TabsTrigger>
             <TabsTrigger value="nav">Menü</TabsTrigger>
             <TabsTrigger value="footer">Lábléc linkek</TabsTrigger>
+            <TabsTrigger value="legal">Jogi oldalak</TabsTrigger>
             <TabsTrigger value="subscribers">Feliratkozók</TabsTrigger>
             <TabsTrigger value="logo">Logó</TabsTrigger>
           </TabsList>
@@ -98,6 +101,7 @@ const Admin = () => {
           <TabsContent value="events"><EventsEditor /></TabsContent>
           <TabsContent value="nav"><NavEditor /></TabsContent>
           <TabsContent value="footer"><FooterLinksEditor /></TabsContent>
+          <TabsContent value="legal"><LegalPagesEditor /></TabsContent>
           <TabsContent value="subscribers"><SubscribersViewer /></TabsContent>
           <TabsContent value="logo"><LogoEditor /></TabsContent>
         </Tabs>

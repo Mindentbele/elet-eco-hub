@@ -44,7 +44,11 @@ const Events = () => {
             <Card key={event.id} className="overflow-hidden hover:shadow-organic transition-all duration-300 hover:-translate-y-1">
               <div className="p-6">
                 <div className="flex items-start justify-between mb-4">
-                  <div className="text-4xl">{event.image}</div>
+                  {event.image?.startsWith("data:") ? (
+                    <img src={event.image} alt="" className="h-12 w-12 object-contain" />
+                  ) : (
+                    <div className="text-4xl">{event.image}</div>
+                  )}
                   <div className="text-right">
                     <div className="flex items-center text-sm text-muted-foreground mb-1">
                       <Users className="h-4 w-4 mr-1" />

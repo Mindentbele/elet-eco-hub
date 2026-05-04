@@ -196,22 +196,47 @@ function ValuesEditor() {
   const addListItem = () => setValuesList([...valuesList, "Új érték"]);
   const removeListItem = (i: number) => setValuesList(valuesList.filter((_, idx) => idx !== i));
 
+  const handleSvgUpload = (id: number, file: File) => {
+    if (!file.type.includes("svg") && !file.type.startsWith("image/")) {
+      toast({ title: "Csak SVG vagy kép tölthető fel!", variant: "destructive" });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => updateValue(id, "icon", reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
   return (
     <Card className="p-6 space-y-6">
       <h2 className="text-xl font-bold text-primary">Értékkártyák (4 kártya)</h2>
-      <p className="text-sm text-muted-foreground">Ikon opciók: Sprout, Home, BookOpen, Users2</p>
-      {values.map((v) => (
-        <div key={v.id} className="flex gap-2 items-start border rounded-lg p-3">
-          <div className="space-y-2 flex-1">
-            <div className="grid grid-cols-2 gap-2">
-              <Input value={v.icon} onChange={(e) => updateValue(v.id, "icon", e.target.value)} placeholder="Ikon" />
-              <Input value={v.title} onChange={(e) => updateValue(v.id, "title", e.target.value)} placeholder="Cím" />
+      <p className="text-sm text-muted-foreground">Beépített ikonok: Sprout, Home, BookOpen, Users2 — vagy tölts fel egyéni SVG-t a kép gombbal.</p>
+      {values.map((v) => {
+        const isCustom = v.icon?.startsWith("data:");
+        return (
+          <div key={v.id} className="flex gap-2 items-start border rounded-lg p-3">
+            <div className="space-y-2 flex-1">
+              <div className="grid grid-cols-[auto_1fr_1fr] gap-2 items-center">
+                <div className="w-10 h-10 rounded border flex items-center justify-center bg-muted/30">
+                  {isCustom ? <img src={v.icon} alt="" className="w-8 h-8 object-contain" /> : <span className="text-xs text-muted-foreground">SVG</span>}
+                </div>
+                <Input value={isCustom ? "[Egyéni SVG]" : v.icon} disabled={isCustom} onChange={(e) => updateValue(v.id, "icon", e.target.value)} placeholder="Ikon név" />
+                <Input value={v.title} onChange={(e) => updateValue(v.id, "title", e.target.value)} placeholder="Cím" />
+              </div>
+              <Textarea value={v.description} onChange={(e) => updateValue(v.id, "description", e.target.value)} placeholder="Leírás" rows={2} />
+              <div className="flex gap-2">
+                <label className="cursor-pointer">
+                  <input type="file" accept=".svg,image/svg+xml,image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleSvgUpload(v.id, e.target.files[0])} />
+                  <Button variant="outline" size="sm" asChild><span><Upload className="mr-1 h-3 w-3" /> SVG feltöltése</span></Button>
+                </label>
+                {isCustom && (
+                  <Button variant="ghost" size="sm" onClick={() => updateValue(v.id, "icon", "Sprout")}>Visszaállítás</Button>
+                )}
+              </div>
             </div>
-            <Textarea value={v.description} onChange={(e) => updateValue(v.id, "description", e.target.value)} placeholder="Leírás" rows={2} />
+            <Button variant="ghost" size="icon" className="text-destructive shrink-0" onClick={() => removeValue(v.id)}><Trash2 className="h-4 w-4" /></Button>
           </div>
-          <Button variant="ghost" size="icon" className="text-destructive shrink-0" onClick={() => removeValue(v.id)}><Trash2 className="h-4 w-4" /></Button>
-        </div>
-      ))}
+        );
+      })}
       <Button onClick={addValue} variant="outline" size="sm"><Plus className="mr-1 h-4 w-4" /> Új kártya</Button>
 
       <h2 className="text-xl font-bold text-primary pt-4">Értékeink lista (zöld doboz)</h2>

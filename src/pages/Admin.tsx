@@ -365,27 +365,46 @@ function EventsEditor() {
   const update = (id: number, field: keyof EventItem, value: string | number) => setEvents(events.map((e) => (e.id === id ? { ...e, [field]: value } : e)));
   const remove = (id: number) => setEvents(events.filter((e) => e.id !== id));
 
+  const handleSvgUpload = (id: number, file: File) => {
+    const reader = new FileReader();
+    reader.onload = () => update(id, "image", reader.result as string);
+    reader.readAsDataURL(file);
+  };
+
   return (
     <Card className="p-6 space-y-6">
       <div className="flex items-center justify-between">
         <h2 className="text-xl font-bold text-primary">Események ({events.length})</h2>
       </div>
-      {events.map((ev) => (
-        <Card key={ev.id} className="p-4 space-y-3 border-border">
-          <div className="flex items-center justify-between">
-            <Input value={ev.image} onChange={(e) => update(ev.id, "image", e.target.value)} className="w-16" placeholder="Emoji" />
-            <Button variant="ghost" size="icon" className="text-destructive" onClick={() => remove(ev.id)}><Trash2 className="h-4 w-4" /></Button>
-          </div>
-          <Input value={ev.title} onChange={(e) => update(ev.id, "title", e.target.value)} placeholder="Cím" />
-          <Textarea value={ev.description} onChange={(e) => update(ev.id, "description", e.target.value)} placeholder="Leírás" />
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
-            <Input value={ev.date} onChange={(e) => update(ev.id, "date", e.target.value)} placeholder="Dátum" />
-            <Input value={ev.time} onChange={(e) => update(ev.id, "time", e.target.value)} placeholder="Időpont" />
-            <Input value={ev.location} onChange={(e) => update(ev.id, "location", e.target.value)} placeholder="Helyszín" />
-            <Input type="number" value={ev.participants} onChange={(e) => update(ev.id, "participants", parseInt(e.target.value) || 0)} placeholder="Résztvevők" />
-          </div>
-        </Card>
-      ))}
+      {events.map((ev) => {
+        const isCustom = ev.image?.startsWith("data:");
+        return (
+          <Card key={ev.id} className="p-4 space-y-3 border-border">
+            <div className="flex items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <div className="w-12 h-12 rounded border flex items-center justify-center bg-muted/30 shrink-0">
+                  {isCustom ? <img src={ev.image} alt="" className="w-9 h-9 object-contain" /> : <span className="text-2xl">{ev.image}</span>}
+                </div>
+                {!isCustom && <Input value={ev.image} onChange={(e) => update(ev.id, "image", e.target.value)} className="w-20" placeholder="Emoji" />}
+                <label className="cursor-pointer">
+                  <input type="file" accept=".svg,image/svg+xml,image/*" className="hidden" onChange={(e) => e.target.files?.[0] && handleSvgUpload(ev.id, e.target.files[0])} />
+                  <Button variant="outline" size="sm" asChild><span><Upload className="mr-1 h-3 w-3" /> SVG</span></Button>
+                </label>
+                {isCustom && <Button variant="ghost" size="sm" onClick={() => update(ev.id, "image", "📅")}>Emoji vissza</Button>}
+              </div>
+              <Button variant="ghost" size="icon" className="text-destructive" onClick={() => remove(ev.id)}><Trash2 className="h-4 w-4" /></Button>
+            </div>
+            <Input value={ev.title} onChange={(e) => update(ev.id, "title", e.target.value)} placeholder="Cím" />
+            <Textarea value={ev.description} onChange={(e) => update(ev.id, "description", e.target.value)} placeholder="Leírás" />
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+              <Input value={ev.date} onChange={(e) => update(ev.id, "date", e.target.value)} placeholder="Dátum" />
+              <Input value={ev.time} onChange={(e) => update(ev.id, "time", e.target.value)} placeholder="Időpont" />
+              <Input value={ev.location} onChange={(e) => update(ev.id, "location", e.target.value)} placeholder="Helyszín" />
+              <Input type="number" value={ev.participants} onChange={(e) => update(ev.id, "participants", parseInt(e.target.value) || 0)} placeholder="Résztvevők" />
+            </div>
+          </Card>
+        );
+      })}
       {events.length > 0 && <Button onClick={save} className="bg-primary"><Save className="mr-2 h-4 w-4" /> Események mentése</Button>}
       <FloatingAddButton onClick={add} label="Új esemény" />
     </Card>

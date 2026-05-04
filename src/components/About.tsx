@@ -33,10 +33,15 @@ const About = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {values.map((value, index) => {
+            const isCustom = value.icon?.startsWith("data:");
             const Icon = iconMap[value.icon] || Sprout;
             return (
               <Card key={value.id || index} className="p-6 text-center hover:shadow-organic transition-all duration-300 border-border/50 hover:-translate-y-1">
-                <Icon className="h-12 w-12 text-primary mx-auto mb-4" />
+                {isCustom ? (
+                  <img src={value.icon} alt="" className="h-12 w-12 mx-auto mb-4 object-contain" />
+                ) : (
+                  <Icon className="h-12 w-12 text-primary mx-auto mb-4" />
+                )}
                 <h3 className="text-xl font-semibold text-primary mb-3">{value.title}</h3>
                 <p className="text-muted-foreground">{value.description}</p>
               </Card>

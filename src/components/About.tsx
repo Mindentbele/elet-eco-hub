@@ -82,9 +82,9 @@ const About = () => {
           <div>
             <h3 className="text-2xl md:text-3xl font-bold text-primary mb-6">Küldetésünk</h3>
             <div className="space-y-4 text-muted-foreground">
-              <p>{texts.missionText}</p>
-              <p>{texts.missionParagraph2}</p>
-              <p>{texts.missionParagraph3}</p>
+              <p className="whitespace-pre-line">{renderWithLinks(texts.missionText)}</p>
+              <p className="whitespace-pre-line">{renderWithLinks(texts.missionParagraph2)}</p>
+              <p className="whitespace-pre-line">{renderWithLinks(texts.missionParagraph3)}</p>
             </div>
           </div>
           <div className="bg-nature-gradient p-8 rounded-2xl text-white">

@@ -6,6 +6,35 @@ import { useAnimateOnScroll } from "@/hooks/useAnimateOnScroll";
 
 const iconMap: Record<string, React.ElementType> = { Sprout, Home, BookOpen, Users2 };
 
+// Parses [label](url) markdown links and plain http(s) URLs into clickable anchors
+const renderWithLinks = (text: string) => {
+  if (!text) return null;
+  const pattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s]+)/g;
+  const parts: (string | JSX.Element)[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
+    const label = match[1] ?? match[3];
+    const url = match[2] ?? match[3];
+    parts.push(
+      <a
+        key={key++}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-primary underline underline-offset-2 hover:text-primary/80"
+      >
+        {label}
+      </a>
+    );
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts;
+};
+
 const About = () => {
   const [texts, setTexts] = useState(defaultTexts);
   const [values, setValues] = useState<ValueItem[]>(defaultValues);

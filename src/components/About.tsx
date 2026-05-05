@@ -55,8 +55,8 @@ const About = () => {
       >
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-primary mb-6">Rólunk</h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            {texts.aboutDescription}
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed whitespace-pre-line">
+            {renderWithLinks(texts.aboutDescription)}
           </p>
         </div>
 

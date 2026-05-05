@@ -6,6 +6,35 @@ import { useAnimateOnScroll } from "@/hooks/useAnimateOnScroll";
 
 const iconMap: Record<string, React.ElementType> = { Sprout, Home, BookOpen, Users2 };
 
+// Parses [label](url) markdown links and plain http(s) URLs into clickable anchors
+const renderWithLinks = (text: string) => {
+  if (!text) return null;
+  const pattern = /\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)|(https?:\/\/[^\s]+)/g;
+  const parts: (string | JSX.Element)[] = [];
+  let lastIndex = 0;
+  let match: RegExpExecArray | null;
+  let key = 0;
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > lastIndex) parts.push(text.slice(lastIndex, match.index));
+    const label = match[1] ?? match[3];
+    const url = match[2] ?? match[3];
+    parts.push(
+      <a
+        key={key++}
+        href={url}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-primary underline underline-offset-2 hover:text-primary/80"
+      >
+        {label}
+      </a>
+    );
+    lastIndex = match.index + match[0].length;
+  }
+  if (lastIndex < text.length) parts.push(text.slice(lastIndex));
+  return parts;
+};
+
 const About = () => {
   const [texts, setTexts] = useState(defaultTexts);
   const [values, setValues] = useState<ValueItem[]>(defaultValues);
@@ -26,8 +55,8 @@ const About = () => {
       >
         <div className="text-center mb-16">
           <h2 className="text-3xl md:text-5xl font-bold text-primary mb-6">Rólunk</h2>
-          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-            {texts.aboutDescription}
+          <p className="text-lg text-muted-foreground max-w-3xl mx-auto leading-relaxed whitespace-pre-line">
+            {renderWithLinks(texts.aboutDescription)}
           </p>
         </div>
 
@@ -43,7 +72,7 @@ const About = () => {
                   <Icon className="h-12 w-12 text-primary mx-auto mb-4" />
                 )}
                 <h3 className="text-xl font-semibold text-primary mb-3">{value.title}</h3>
-                <p className="text-muted-foreground">{value.description}</p>
+                <p className="text-muted-foreground whitespace-pre-line">{renderWithLinks(value.description)}</p>
               </Card>
             );
           })}
@@ -53,9 +82,9 @@ const About = () => {
           <div>
             <h3 className="text-2xl md:text-3xl font-bold text-primary mb-6">Küldetésünk</h3>
             <div className="space-y-4 text-muted-foreground">
-              <p>{texts.missionText}</p>
-              <p>{texts.missionParagraph2}</p>
-              <p>{texts.missionParagraph3}</p>
+              <p className="whitespace-pre-line">{renderWithLinks(texts.missionText)}</p>
+              <p className="whitespace-pre-line">{renderWithLinks(texts.missionParagraph2)}</p>
+              <p className="whitespace-pre-line">{renderWithLinks(texts.missionParagraph3)}</p>
             </div>
           </div>
           <div className="bg-nature-gradient p-8 rounded-2xl text-white">

@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Több, mint kosár — Helyi termelők, friss kosarak</title>
+<meta name="description" content="Több, mint kosár: helyi termelőktől, közvetlenül hozzád. Rendelj friss, szezonális kosarakat a shop.tobbmintkosar.hu oldalon!" />
+<link rel="canonical" href="https://tobbmintkosar.hu/" />
+<meta property="og:title" content="Több, mint kosár — Helyi termelők, friss kosarak" />
+<meta property="og:description" content="Helyi termelőktől, közvetlenül hozzád. Rendelj most a shop oldalunkon!" />
+<meta property="og:type" content="website" />
+<meta property="og:url" content="https://tobbmintkosar.hu/" />
+
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          tomato: { 50:'#fff5f3', 100:'#ffe4dd', 400:'#ff7a5c', 500:'#ef5a3c', 600:'#d8432a', 700:'#b3331e' },
+          leaf:   { 50:'#f1faf0', 100:'#dff3dc', 400:'#6cbf63', 500:'#4ea845', 600:'#3a8a33', 700:'#2d6b28' },
+          cream:  { 50:'#fffaf0', 100:'#fdf2dc', 200:'#f7e4bd' },
+          ink:    { 800:'#2b2118', 900:'#1a130c' },
+        },
+        fontFamily: {
+          display: ['Fraunces', 'serif'],
+          sans: ['Inter', 'system-ui', 'sans-serif'],
+        },
+        keyframes: {
+          float: { '0%,100%':{transform:'translateY(0)'},'50%':{transform:'translateY(-6px)'} },
+          pulseRing: {
+            '0%':   { transform:'scale(0.95)', opacity:'0.7' },
+            '70%':  { transform:'scale(1.4)',  opacity:'0' },
+            '100%': { transform:'scale(1.4)',  opacity:'0' },
+          },
+          fadeUp: { '0%':{opacity:'0',transform:'translateY(16px)'},'100%':{opacity:'1',transform:'translateY(0)'} },
+        },
+        animation: {
+          float: 'float 3s ease-in-out infinite',
+          pulseRing: 'pulseRing 2.2s cubic-bezier(0.4,0,0.6,1) infinite',
+          fadeUp: 'fadeUp 0.7s ease-out both',
+        }
+      }
+    }
+  }
+</script>
+
+<style>
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', system-ui, sans-serif; }
+  .display { font-family: 'Fraunces', serif; letter-spacing: -0.01em; }
+  .hero-bg {
+    background:
+      radial-gradient(1200px 600px at 80% -10%, rgba(255,122,92,0.25), transparent 60%),
+      radial-gradient(900px 500px at 0% 20%, rgba(78,168,69,0.22), transparent 60%),
+      linear-gradient(180deg, #fffaf0 0%, #fdf2dc 100%);
+  }
+  .veggie-pattern {
+    background-image:
+      radial-gradient(circle at 20% 20%, rgba(78,168,69,0.08) 0 2px, transparent 3px),
+      radial-gradient(circle at 70% 60%, rgba(239,90,60,0.08) 0 2px, transparent 3px);
+    background-size: 36px 36px;
+  }
+</style>
+</head>
+<body class="bg-cream-50 text-ink-900">
+
+<!-- NAV -->
+<header class="fixed top-0 inset-x-0 z-40 bg-cream-50/80 backdrop-blur border-b border-cream-200">
+  <nav class="max-w-6xl mx-auto px-5 h-16 flex items-center justify-between">
+    <a href="#top" class="flex items-center gap-2 font-display text-xl font-extrabold text-leaf-700">
+      <span class="text-2xl">🧺</span> Több, mint kosár
+    </a>
+    <ul class="hidden md:flex items-center gap-7 text-sm font-medium text-ink-800">
+      <li><a class="hover:text-tomato-600" href="#about">Rólunk</a></li>
+      <li><a class="hover:text-tomato-600" href="#how">Hogyan működik</a></li>
+      <li><a class="hover:text-tomato-600" href="#producers">Termelők</a></li>
+      <li><a class="hover:text-tomato-600" href="#faq">GYIK</a></li>
+      <li><a class="hover:text-tomato-600" href="#contact">Kapcsolat</a></li>
+    </ul>
+    <a href="https://shop.tobbmintkosar.hu" target="_blank" rel="noopener"
+       class="hidden sm:inline-flex items-center gap-2 bg-tomato-500 hover:bg-tomato-600 text-white font-semibold px-4 py-2 rounded-full text-sm shadow-md transition">
+      Irány a shop →
+    </a>
+  </nav>
+</header>
+
+<!-- HERO -->
+<section id="top" class="hero-bg veggie-pattern pt-28 pb-20 md:pt-36 md:pb-28">
+  <div class="max-w-6xl mx-auto px-5 grid md:grid-cols-2 gap-10 items-center">
+    <div class="animate-fadeUp">
+      <span class="inline-flex items-center gap-2 bg-leaf-100 text-leaf-700 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wide">
+        🌿 Helyi · Friss · Szezonális
+      </span>
+      <h1 class="display text-4xl md:text-6xl font-extrabold mt-5 leading-[1.05] text-ink-900">
+        Több, mint <span class="text-tomato-600">kosár.</span><br/>
+        Egy <span class="text-leaf-600">közösség</span> a tányérodon.
+      </h1>
+      <p class="mt-5 text-lg text-ink-800/80 max-w-xl">
+        Heti friss zöldség- és gyümölcskosarak közvetlenül helyi gazdáktól.
+        Rendeld meg pár kattintással — és támogasd a magyar termelőket.
+      </p>
+      <div class="mt-8 flex flex-wrap gap-3">
+        <a href="https://shop.tobbmintkosar.hu" target="_blank" rel="noopener"
+           class="inline-flex items-center gap-2 bg-tomato-500 hover:bg-tomato-600 text-white font-bold px-7 py-4 rounded-full text-base shadow-lg shadow-tomato-500/30 transition transform hover:-translate-y-0.5">
+          🛒 Vásárolj most a shopban
+        </a>
+        <a href="#how" class="inline-flex items-center gap-2 bg-white hover:bg-cream-100 text-ink-900 font-semibold px-6 py-4 rounded-full text-base border border-cream-200 transition">
+          Hogyan működik?
+        </a>
+      </div>
+      <div class="mt-8 flex items-center gap-6 text-sm text-ink-800/70">
+        <div class="flex items-center gap-2"><span class="text-leaf-600">✓</span> Heti szállítás</div>
+        <div class="flex items-center gap-2"><span class="text-leaf-600">✓</span> Helyi termelők</div>
+        <div class="flex items-center gap-2"><span class="text-leaf-600">✓</span> Szezonális</div>
+      </div>
+    </div>
+    <div class="relative animate-fadeUp">
+      <div class="absolute -inset-6 bg-gradient-to-tr from-tomato-100 to-leaf-100 rounded-[2rem] blur-2xl opacity-70"></div>
+      <div class="relative bg-white rounded-[2rem] shadow-2xl p-8 md:p-10 border border-cream-200">
+        <div class="text-7xl md:text-8xl text-center animate-float">🧺</div>
+        <div class="grid grid-cols-3 gap-3 mt-6 text-center text-3xl md:text-4xl">
+          <div class="bg-tomato-50 rounded-2xl py-4">🍅</div>
+          <div class="bg-leaf-50 rounded-2xl py-4">🥬</div>
+          <div class="bg-cream-100 rounded-2xl py-4">🥕</div>
+          <div class="bg-leaf-50 rounded-2xl py-4">🥦</div>
+          <div class="bg-cream-100 rounded-2xl py-4">🍎</div>
+          <div class="bg-tomato-50 rounded-2xl py-4">🌽</div>
+        </div>
+        <p class="text-center text-sm text-ink-800/60 mt-5">A heti kosár tartalma a szezontól függ.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="about" class="py-20 md:py-28 bg-white">
+  <div class="max-w-5xl mx-auto px-5 text-center">
+    <span class="text-tomato-600 font-semibold uppercase tracking-wider text-sm">Rólunk</span>
+    <h2 class="display text-3xl md:text-5xl font-extrabold mt-3">Mi az a kosárközösség?</h2>
+    <p class="mt-6 text-lg text-ink-800/80 max-w-3xl mx-auto leading-relaxed">
+      A <strong>Több, mint kosár</strong> egy helyi gazdákat és tudatos vásárlókat összekötő közösség.
+      Hetente friss, szezonális zöldséget, gyümölcsöt és kézműves élelmiszert juttatunk el hozzád —
+      közvetlenül onnan, ahol termett. Nincs felesleges közvetítő, nincs hosszú tárolás.
+      Csak igazi íz, igazi emberek mögött.
+    </p>
+    <div class="grid sm:grid-cols-3 gap-6 mt-12">
+      <div class="bg-cream-50 rounded-2xl p-6 border border-cream-200">
+        <div class="text-4xl mb-3">🌱</div>
+        <h3 class="font-display text-xl font-bold mb-2">Friss</h3>
+        <p class="text-sm text-ink-800/70">Reggel szedve, aznap nálad.</p>
+      </div>
+      <div class="bg-cream-50 rounded-2xl p-6 border border-cream-200">
+        <div class="text-4xl mb-3">🤝</div>
+        <h3 class="font-display text-xl font-bold mb-2">Közösségi</h3>
+        <p class="text-sm text-ink-800/70">Helyi termelőket támogatsz.</p>
+      </div>
+      <div class="bg-cream-50 rounded-2xl p-6 border border-cream-200">
+        <div class="text-4xl mb-3">♻️</div>
+        <h3 class="font-display text-xl font-bold mb-2">Fenntartható</h3>
+        <p class="text-sm text-ink-800/70">Rövid ellátási lánc, kevesebb hulladék.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="how" class="py-20 md:py-28 bg-cream-50">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="text-center mb-14">
+      <span class="text-leaf-600 font-semibold uppercase tracking-wider text-sm">Egyszerű</span>
+      <h2 class="display text-3xl md:text-5xl font-extrabold mt-3">Hogyan működik?</h2>
+    </div>
+    <div class="grid md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-2xl p-7 shadow-sm border border-cream-200 relative">
+        <div class="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-tomato-500 text-white font-display font-extrabold text-xl flex items-center justify-center shadow-lg">1</div>
+        <div class="text-4xl mb-3">🛒</div>
+        <h3 class="font-display text-2xl font-bold mb-2">Válaszd ki</h3>
+        <p class="text-ink-800/70">Nézd meg az aktuális kínálatot a shopunkban, és állítsd össze a saját kosaradat.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-7 shadow-sm border border-cream-200 relative">
+        <div class="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-tomato-500 text-white font-display font-extrabold text-xl flex items-center justify-center shadow-lg">2</div>
+        <div class="text-4xl mb-3">📦</div>
+        <h3 class="font-display text-2xl font-bold mb-2">Rendelj</h3>
+        <p class="text-ink-800/70">Néhány kattintás, és a rendelés már a termelőkhöz került. A héten összekészítjük.</p>
+      </div>
+      <div class="bg-white rounded-2xl p-7 shadow-sm border border-cream-200 relative">
+        <div class="absolute -top-4 -left-4 w-12 h-12 rounded-full bg-tomato-500 text-white font-display font-extrabold text-xl flex items-center justify-center shadow-lg">3</div>
+        <div class="text-4xl mb-3">🚚</div>
+        <h3 class="font-display text-2xl font-bold mb-2">Vedd át</h3>
+        <p class="text-ink-800/70">Vedd át az átvételi ponton, vagy kérd kiszállítva — frissen, gyorsan.</p>
+      </div>
+    </div>
+    <div class="text-center mt-12">
+      <a href="https://shop.tobbmintkosar.hu" target="_blank" rel="noopener"
+         class="inline-flex items-center gap-2 bg-tomato-500 hover:bg-tomato-600 text-white font-bold px-8 py-4 rounded-full shadow-lg shadow-tomato-500/30 transition">
+        Indítsd a rendelést →
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCERS -->
+<section id="producers" class="py-20 md:py-28 bg-white">
+  <div class="max-w-6xl mx-auto px-5">
+    <div class="text-center mb-14">
+      <span class="text-tomato-600 font-semibold uppercase tracking-wider text-sm">Termelőink</span>
+      <h2 class="display text-3xl md:text-5xl font-extrabold mt-3">Akik mögötte állnak</h2>
+      <p class="mt-4 text-ink-800/70 max-w-2xl mx-auto">Helyi gazdák, kézművesek, kistermelők — mindannyian szenvedéllyel készítik, amit eszel.</p>
+    </div>
+    <div class="grid sm:grid-cols-2 md:grid-cols-4 gap-6">
+      <div class="bg-leaf-50 rounded-2xl p-6 text-center border border-leaf-100">
+        <div class="text-5xl mb-3">👨‍🌾</div>
+        <h3 class="font-display font-bold">Kovács Zöldségkert</h3>
+        <p class="text-sm text-ink-800/60 mt-1">Szezonális zöldségek</p>
+      </div>
+      <div class="bg-tomato-50 rounded-2xl p-6 text-center border border-tomato-100">
+        <div class="text-5xl mb-3">🍯</div>
+        <h3 class="font-display font-bold">Méhész Pista</h3>
+        <p class="text-sm text-ink-800/60 mt-1">Hazai mézek</p>
+      </div>
+      <div class="bg-cream-100 rounded-2xl p-6 text-center border border-cream-200">
+        <div class="text-5xl mb-3">🧀</div>
+        <h3 class="font-display font-bold">Hegyi Sajtműhely</h3>
+        <p class="text-sm text-ink-800/60 mt-1">Kézműves sajtok</p>
+      </div>
+      <div class="bg-leaf-50 rounded-2xl p-6 text-center border border-leaf-100">
+        <div class="text-5xl mb-3">🍞</div>
+        <h3 class="font-display font-bold">Falusi Pékség</h3>
+        <p class="text-sm text-ink-800/60 mt-1">Kovászos kenyerek</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" class="py-20 md:py-28 bg-cream-50">
+  <div class="max-w-3xl mx-auto px-5">
+    <div class="text-center mb-12">
+      <span class="text-leaf-600 font-semibold uppercase tracking-wider text-sm">GYIK</span>
+      <h2 class="display text-3xl md:text-5xl font-extrabold mt-3">Gyakori kérdések</h2>
+    </div>
+    <div class="space-y-3">
+      <details class="group bg-white rounded-2xl p-5 border border-cream-200 open:shadow-md transition">
+        <summary class="cursor-pointer font-display font-bold text-lg flex justify-between items-center">
+          Mikor van leadási és átvételi határidő?
+          <span class="text-tomato-500 text-2xl transition group-open:rotate-45">+</span>
+        </summary>
+        <p class="mt-3 text-ink-800/70">Vasárnap 20:00-ig adhatod le a rendelésed. Az átvétel/szállítás a hét közepén történik.</p>
+      </details>
+      <details class="group bg-white rounded-2xl p-5 border border-cream-200 open:shadow-md transition">
+        <summary class="cursor-pointer font-display font-bold text-lg flex justify-between items-center">
+          Hova szállítotok?
+          <span class="text-tomato-500 text-2xl transition group-open:rotate-45">+</span>
+        </summary>
+        <p class="mt-3 text-ink-800/70">Több budapesti és környéki átvételi pontunk van, illetve házhozszállítást is vállalunk a régióban.</p>
+      </details>
+      <details class="group bg-white rounded-2xl p-5 border border-cream-200 open:shadow-md transition">
+        <summary class="cursor-pointer font-display font-bold text-lg flex justify-between items-center">
+          Kell-e előfizetni?
+          <span class="text-tomato-500 text-2xl transition group-open:rotate-45">+</span>
+        </summary>
+        <p class="mt-3 text-ink-800/70">Nem. Hétről hétre szabadon eldöntheted, rendelsz-e — semmilyen kötelezettség nincs.</p>
+      </details>
+      <details class="group bg-white rounded-2xl p-5 border border-cream-200 open:shadow-md transition">
+        <summary class="cursor-pointer font-display font-bold text-lg flex justify-between items-center">
+          Hogyan fizethetek?
+          <span class="text-tomato-500 text-2xl transition group-open:rotate-45">+</span>
+        </summary>
+        <p class="mt-3 text-ink-800/70">A shopban bankkártyával és átutalással is fizethetsz biztonságosan.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="py-20 md:py-28 bg-gradient-to-br from-leaf-600 to-leaf-700 text-white">
+  <div class="max-w-4xl mx-auto px-5 text-center">
+    <h2 class="display text-3xl md:text-5xl font-extrabold">Kérdésed van?</h2>
+    <p class="mt-4 text-white/85 text-lg">Írj vagy hívj minket bátran — szívesen segítünk.</p>
+    <div class="mt-10 grid sm:grid-cols-2 gap-5 max-w-xl mx-auto">
+      <a href="mailto:info@tobbmintkosar.hu" class="bg-white/10 hover:bg-white/20 backdrop-blur rounded-2xl p-6 transition border border-white/20">
+        <div class="text-3xl mb-2">✉️</div>
+        <div class="font-bold">Email</div>
+        <div class="text-sm text-white/80 mt-1 break-all">info@tobbmintkosar.hu</div>
+      </a>
+      <a href="tel:+36301234567" class="bg-white/10 hover:bg-white/20 backdrop-blur rounded-2xl p-6 transition border border-white/20">
+        <div class="text-3xl mb-2">📞</div>
+        <div class="font-bold">Telefon</div>
+        <div class="text-sm text-white/80 mt-1">+36 30 123 4567</div>
+      </a>
+    </div>
+    <a href="https://shop.tobbmintkosar.hu" target="_blank" rel="noopener"
+       class="mt-12 inline-flex items-center gap-2 bg-tomato-500 hover:bg-tomato-600 text-white font-bold px-8 py-4 rounded-full shadow-2xl transition transform hover:-translate-y-0.5">
+      🛒 Irány a shop
+    </a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="bg-ink-900 text-white/70 py-10">
+  <div class="max-w-6xl mx-auto px-5 flex flex-col md:flex-row gap-4 items-center justify-between text-sm">
+    <div class="flex items-center gap-2 font-display text-white">
+      <span>🧺</span> Több, mint kosár
+    </div>
+    <div>© <span id="year"></span> Több, mint kosár. Minden jog fenntartva.</div>
+    <a href="https://shop.tobbmintkosar.hu" target="_blank" rel="noopener" class="text-tomato-400 hover:text-tomato-50">shop.tobbmintkosar.hu →</a>
+  </div>
+</footer>
+
+<!-- FLOATING CTA -->
+<a href="https://shop.tobbmintkosar.hu" target="_blank" rel="noopener"
+   aria-label="Irány a shop"
+   class="fixed bottom-6 right-6 z-50 group">
+  <span class="absolute inset-0 rounded-full bg-tomato-500 animate-pulseRing"></span>
+  <span class="relative inline-flex items-center gap-2 bg-tomato-500 hover:bg-tomato-600 text-white font-bold px-5 py-4 rounded-full shadow-2xl shadow-tomato-500/40 transition transform group-hover:-translate-y-0.5">
+    <span class="text-xl">🛒</span>
+    <span class="hidden sm:inline">Vásárolj most</span>
+  </span>
+</a>
+
+<script>
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>

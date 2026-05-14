@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html { scroll-behavior: smooth; }
+body { font-family: "Inter", system-ui, sans-serif; @apply bg-cream-50 text-ink-900; }
+.display { font-family: "Fraunces", serif; letter-spacing: -0.01em; }
+
+.hero-bg {
+  background:
+    radial-gradient(1200px 600px at 80% -10%, rgba(255,122,92,0.25), transparent 60%),
+    radial-gradient(900px 500px at 0% 20%, rgba(78,168,69,0.22), transparent 60%),
+    linear-gradient(180deg, #fffaf0 0%, #fdf2dc 100%);
+}
+.veggie-pattern {
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(78,168,69,0.08) 0 2px, transparent 3px),
+    radial-gradient(circle at 70% 60%, rgba(239,90,60,0.08) 0 2px, transparent 3px);
+  background-size: 36px 36px;
+}

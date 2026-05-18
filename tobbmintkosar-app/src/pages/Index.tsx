@@ -18,14 +18,14 @@ export default function Index() {
     <>
       <Nav content={c} />
       <Hero content={c} />
-      <About />
-      <HowItWorks shopUrl={c.shopUrl} />
-      <Producers producers={c.producers} />
-      <Faq faqs={c.faqs} />
-      <Newsletter />
+      <About content={c} />
+      <HowItWorks content={c} />
+      <Producers content={c} />
+      <Faq content={c} />
+      <Newsletter content={c} />
       <Contact content={c} />
       <Footer content={c} />
-      <FloatingCTA shopUrl={c.shopUrl} />
+      <FloatingCTA content={c} />
     </>
   );
 }

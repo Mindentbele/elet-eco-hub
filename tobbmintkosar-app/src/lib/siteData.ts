@@ -104,6 +104,7 @@ export const defaultContent: SiteContent = {
   heroTitleAccent: "kosár.",
   heroTitleLine2Prefix: "Egy",
   heroTitleLine2Accent: "közösség",
+  heroTitleLine2Suffix: "a tányérodon.",
   heroSubtitle: "Heti friss zöldség- és gyümölcskosarak közvetlenül helyi gazdáktól. Rendeld meg pár kattintással — és támogasd a magyar termelőket.",
   heroCtaPrimary: "🛒 Vásárolj most a shopban",
   heroCtaSecondary: "Hogyan működik?",

@@ -294,7 +294,7 @@ function HeroTab({ c, save, set }: { c: SiteContent; save: SaveFn; set: SetFn })
           <div className="grid sm:grid-cols-3 gap-2">
             {c.basketItems.map((it, i) => (
               <div key={it.id} className="flex gap-2 items-center bg-cream-50 rounded-xl p-2 border border-cream-200">
-                <input className={`${inputCls} text-2xl text-center w-16`} value={it.emoji} onChange={e => updateItem(i, { emoji: e.target.value })} />
+                <EmojiPicker value={it.emoji} onChange={v => updateItem(i, { emoji: v })} />
                 <select className={inputCls} value={it.bg} onChange={e => updateItem(i, { bg: e.target.value as any })}>
                   <option value="leaf">Zöld háttér</option>
                   <option value="tomato">Piros háttér</option>

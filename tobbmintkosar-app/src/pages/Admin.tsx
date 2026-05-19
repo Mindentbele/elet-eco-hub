@@ -258,6 +258,7 @@ function HeroTab({ c, save, set }: { c: SiteContent; save: SaveFn; set: SetFn })
           <Field label="Címsor 1. sor (piros kiemelés)"><input className={inputCls} value={c.heroTitleAccent} onChange={e => set("heroTitleAccent", e.target.value)} /></Field>
           <Field label="Címsor 2. sor (eleje)"><input className={inputCls} value={c.heroTitleLine2Prefix} onChange={e => set("heroTitleLine2Prefix", e.target.value)} /></Field>
           <Field label="Címsor 2. sor (zöld kiemelés)"><input className={inputCls} value={c.heroTitleLine2Accent} onChange={e => set("heroTitleLine2Accent", e.target.value)} /></Field>
+          <Field label="Címsor 2. sor (vége, pl. „a tányérodon.")"><input className={inputCls} value={c.heroTitleLine2Suffix} onChange={e => set("heroTitleLine2Suffix", e.target.value)} /></Field>
         </div>
         <div className="mt-4">
           <Field label="Alcím / leírás"><textarea className={taCls} value={c.heroSubtitle} onChange={e => set("heroSubtitle", e.target.value)} /></Field>

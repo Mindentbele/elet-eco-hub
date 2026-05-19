@@ -369,7 +369,7 @@ function HowTab({ c, save, set }: { c: SiteContent; save: SaveFn; set: SetFn }) 
         <div className="space-y-3">
           {c.howSteps.map((s, i) => (
             <div key={s.id} className="grid sm:grid-cols-12 gap-2 items-start bg-cream-50 rounded-xl p-3 border border-cream-200">
-              <input className={`${inputCls} sm:col-span-1 text-2xl text-center`} value={s.emoji} onChange={e => update(i, { emoji: e.target.value })} />
+              <div className="sm:col-span-1"><EmojiPicker value={s.emoji} onChange={v => update(i, { emoji: v })} /></div>
               <input className={`${inputCls} sm:col-span-3`} placeholder="Cím" value={s.title} onChange={e => update(i, { title: e.target.value })} />
               <textarea className={`${inputCls} sm:col-span-6 min-h-[60px]`} placeholder="Leírás" value={s.desc} onChange={e => update(i, { desc: e.target.value })} />
               <div className="sm:col-span-2 flex gap-1 justify-end">

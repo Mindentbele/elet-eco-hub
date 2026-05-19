@@ -110,6 +110,49 @@ function Field({ label, children, hint }: { label: string; children: React.React
   );
 }
 
+const EMOJI_PRESETS = [
+  "🍅","🥬","🥕","🥦","🍎","🌽","🥒","🥔","🧅","🧄","🌶️","🫑","🍆","🥑","🍇","🍓","🍑","🍐","🍌","🍊","🍋","🍉","🍈","🍒","🥝","🥥","🫐","🍍",
+  "🥖","🍞","🥐","🧀","🍯","🥚","🐓","🐄","🐖","🐑","🐐","🐝","🌻","🌾","🌿","🍀","🌱","🌳","🌼","🌷","🍄","🥜","🌰","🫛","🫘",
+  "🛒","📦","🚚","🧺","🛍️","♻️","🌍","💚","🤝","✨","🌟","✅","🥗","🍲","🥣","🍵","☕","🥛","🧴","🧂","🫙","🍶","🌞","💧","🔥",
+];
+
+function EmojiPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative inline-block">
+      <button type="button" onClick={() => setOpen(o => !o)}
+              className="px-3 py-2 rounded-xl border border-cream-200 bg-white text-2xl leading-none min-w-[56px]">
+        {value || "❓"}
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-1 bg-white border border-cream-200 rounded-xl shadow-xl p-2 w-72 max-h-64 overflow-y-auto">
+          <div className="grid grid-cols-8 gap-1">
+            {EMOJI_PRESETS.map(e => (
+              <button key={e} type="button" onClick={() => { onChange(e); setOpen(false); }}
+                      className={`text-2xl p-1 rounded hover:bg-cream-100 ${value===e ? "bg-tomato-50 ring-2 ring-tomato-400" : ""}`}>{e}</button>
+            ))}
+          </div>
+          <div className="mt-2 pt-2 border-t border-cream-200">
+            <input className="w-full px-2 py-1.5 rounded-lg border border-cream-200 text-sm"
+                   placeholder="Vagy írj saját emoji-t / szöveget"
+                   value={value} onChange={e => onChange(e.target.value)} />
+            <button type="button" onClick={() => setOpen(false)} className="mt-2 w-full text-xs text-ink-800/60 hover:text-tomato-600">Bezár</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function sanitizeMapEmbed(input: string): string {
+  if (!input) return "";
+  const t = input.trim();
+  // If user pasted full <iframe ...> HTML, extract src.
+  const m = t.match(/src\s*=\s*["']([^"']+)["']/i);
+  if (m) return m[1];
+  return t;
+}
+
 type SetFn = <K extends keyof SiteContent>(k: K, v: SiteContent[K]) => void;
 type SaveFn = (n: SiteContent) => void;
 

@@ -330,8 +330,8 @@ function AboutTab({ c, set }: { c: SiteContent; set: SetFn }) {
           const tK = `aboutCard${n}Title` as keyof SiteContent;
           const dK = `aboutCard${n}Desc` as keyof SiteContent;
           return (
-            <div key={n} className="grid sm:grid-cols-12 gap-3 mb-3">
-              <input className={`${inputCls} sm:col-span-1 text-2xl text-center`} value={c[eK] as string} onChange={e => set(eK, e.target.value as any)} />
+            <div key={n} className="grid sm:grid-cols-12 gap-3 mb-3 items-center">
+              <div className="sm:col-span-1"><EmojiPicker value={c[eK] as string} onChange={v => set(eK, v as any)} /></div>
               <input className={`${inputCls} sm:col-span-3`} placeholder="Cím" value={c[tK] as string} onChange={e => set(tK, e.target.value as any)} />
               <input className={`${inputCls} sm:col-span-8`} placeholder="Leírás" value={c[dK] as string} onChange={e => set(dK, e.target.value as any)} />
             </div>

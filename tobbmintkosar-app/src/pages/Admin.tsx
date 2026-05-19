@@ -567,14 +567,34 @@ function ContactTab({ c, set }: { c: SiteContent; set: SetFn }) {
           <Field label="Alsó CTA gomb (shopra visz)"><input className={inputCls} value={c.contactShopCta} onChange={e => set("contactShopCta", e.target.value)} /></Field>
         </div>
       </Section>
-      <Section title="Térkép (Google Maps embed URL)">
-        <Field label="Embed URL"
-               hint='Google Mapson keress rá a címre → Megosztás → Térkép beágyazása → másold ki a src="..." értékét. Vagy: https://www.google.com/maps?q=CÍM&output=embed'>
-          <input className={inputCls} value={c.mapEmbedUrl} onChange={e => set("mapEmbedUrl", e.target.value)} />
+      <Section title="Térkép (Google Maps)">
+        <Field label="Cím gyors-beállítás (egyszerű mód)"
+               hint="Csak írd be a címet és kattints a Beállítás gombra — automatikusan elkészítjük a térkép URL-t.">
+          <div className="flex gap-2">
+            <input id="map-addr-quick" className={inputCls} placeholder="pl. Budapest, Andrássy út 1." />
+            <button type="button"
+                    onClick={() => {
+                      const el = document.getElementById("map-addr-quick") as HTMLInputElement | null;
+                      const addr = el?.value.trim();
+                      if (!addr) return;
+                      set("mapEmbedUrl", `https://www.google.com/maps?q=${encodeURIComponent(addr)}&output=embed`);
+                    }}
+                    className="bg-leaf-600 hover:bg-leaf-700 text-white font-semibold px-5 py-2 rounded-xl whitespace-nowrap">Beállítás</button>
+          </div>
         </Field>
+        <div className="mt-5">
+          <Field label="Vagy egyéni Embed URL / iframe kód"
+                 hint='Google Maps → keress rá a címre → Megosztás → "Térkép beágyazása" → másold be akár a teljes <iframe ...> kódot, akár csak az URL-t. Automatikusan kinyerjük.'>
+            <input className={inputCls} value={c.mapEmbedUrl}
+                   onChange={e => set("mapEmbedUrl", sanitizeMapEmbed(e.target.value))} />
+          </Field>
+          {c.mapEmbedUrl && !/^https?:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.google\.)/.test(c.mapEmbedUrl) && (
+            <p className="mt-2 text-xs text-tomato-600">⚠️ Ez nem tűnik Google Maps URL-nek. Az előnézetben a megadott oldal jelenik meg. Használd a gyors-beállítást vagy a Google Maps „Térkép beágyazása" funkcióját.</p>
+          )}
+        </div>
         {c.mapEmbedUrl && (
           <div className="mt-4 rounded-xl overflow-hidden border border-cream-200">
-            <iframe src={c.mapEmbedUrl} className="w-full h-64" loading="lazy" />
+            <iframe src={c.mapEmbedUrl} className="w-full h-64" loading="lazy" title="Térkép előnézet" />
           </div>
         )}
       </Section>

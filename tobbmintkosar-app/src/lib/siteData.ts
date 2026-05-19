@@ -1,6 +1,7 @@
 // LocalStorage-based site data store for "Több, mint kosár"
 
-export type Producer = { id: string; name: string; description: string; emoji: string; bgColor: "leaf" | "tomato" | "cream" };
+export type ProducerColor = "leaf" | "tomato" | "cream" | "sky" | "peach" | "lilac";
+export type Producer = { id: string; name: string; description: string; emoji: string; bgColor: ProducerColor; logoDataUrl?: string | null };
 export type Faq = { id: string; question: string; answer: string };
 export type BasketItem = { id: string; emoji: string; bg: "leaf" | "tomato" | "cream" };
 export type HowStep = { id: string; emoji: string; title: string; desc: string };

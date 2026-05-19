@@ -17,7 +17,7 @@ export default function Hero({ content }: { content: SiteContent }) {
           </span>
           <h1 className="display text-4xl md:text-6xl font-extrabold mt-5 leading-[1.05] text-ink-900">
             {content.heroTitleLine1} <span className="text-tomato-600">{content.heroTitleAccent}</span><br/>
-            {content.heroTitleLine2Prefix} <span className="text-leaf-600">{content.heroTitleLine2Accent}</span> a tányérodon.
+            {content.heroTitleLine2Prefix} <span className="text-leaf-600">{content.heroTitleLine2Accent}</span> {content.heroTitleLine2Suffix}
           </h1>
           <p className="mt-5 text-lg text-ink-800/80 max-w-xl whitespace-pre-line">{content.heroSubtitle}</p>
           <div className="mt-8 flex flex-wrap gap-3">

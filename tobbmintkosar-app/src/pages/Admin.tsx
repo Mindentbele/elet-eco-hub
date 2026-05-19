@@ -110,6 +110,49 @@ function Field({ label, children, hint }: { label: string; children: React.React
   );
 }
 
+const EMOJI_PRESETS = [
+  "🍅","🥬","🥕","🥦","🍎","🌽","🥒","🥔","🧅","🧄","🌶️","🫑","🍆","🥑","🍇","🍓","🍑","🍐","🍌","🍊","🍋","🍉","🍈","🍒","🥝","🥥","🫐","🍍",
+  "🥖","🍞","🥐","🧀","🍯","🥚","🐓","🐄","🐖","🐑","🐐","🐝","🌻","🌾","🌿","🍀","🌱","🌳","🌼","🌷","🍄","🥜","🌰","🫛","🫘",
+  "🛒","📦","🚚","🧺","🛍️","♻️","🌍","💚","🤝","✨","🌟","✅","🥗","🍲","🥣","🍵","☕","🥛","🧴","🧂","🫙","🍶","🌞","💧","🔥",
+];
+
+function EmojiPicker({ value, onChange }: { value: string; onChange: (v: string) => void }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div className="relative inline-block">
+      <button type="button" onClick={() => setOpen(o => !o)}
+              className="px-3 py-2 rounded-xl border border-cream-200 bg-white text-2xl leading-none min-w-[56px]">
+        {value || "❓"}
+      </button>
+      {open && (
+        <div className="absolute z-50 mt-1 bg-white border border-cream-200 rounded-xl shadow-xl p-2 w-72 max-h-64 overflow-y-auto">
+          <div className="grid grid-cols-8 gap-1">
+            {EMOJI_PRESETS.map(e => (
+              <button key={e} type="button" onClick={() => { onChange(e); setOpen(false); }}
+                      className={`text-2xl p-1 rounded hover:bg-cream-100 ${value===e ? "bg-tomato-50 ring-2 ring-tomato-400" : ""}`}>{e}</button>
+            ))}
+          </div>
+          <div className="mt-2 pt-2 border-t border-cream-200">
+            <input className="w-full px-2 py-1.5 rounded-lg border border-cream-200 text-sm"
+                   placeholder="Vagy írj saját emoji-t / szöveget"
+                   value={value} onChange={e => onChange(e.target.value)} />
+            <button type="button" onClick={() => setOpen(false)} className="mt-2 w-full text-xs text-ink-800/60 hover:text-tomato-600">Bezár</button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function sanitizeMapEmbed(input: string): string {
+  if (!input) return "";
+  const t = input.trim();
+  // If user pasted full <iframe ...> HTML, extract src.
+  const m = t.match(/src\s*=\s*["']([^"']+)["']/i);
+  if (m) return m[1];
+  return t;
+}
+
 type SetFn = <K extends keyof SiteContent>(k: K, v: SiteContent[K]) => void;
 type SaveFn = (n: SiteContent) => void;
 
@@ -215,6 +258,7 @@ function HeroTab({ c, save, set }: { c: SiteContent; save: SaveFn; set: SetFn })
           <Field label="Címsor 1. sor (piros kiemelés)"><input className={inputCls} value={c.heroTitleAccent} onChange={e => set("heroTitleAccent", e.target.value)} /></Field>
           <Field label="Címsor 2. sor (eleje)"><input className={inputCls} value={c.heroTitleLine2Prefix} onChange={e => set("heroTitleLine2Prefix", e.target.value)} /></Field>
           <Field label="Címsor 2. sor (zöld kiemelés)"><input className={inputCls} value={c.heroTitleLine2Accent} onChange={e => set("heroTitleLine2Accent", e.target.value)} /></Field>
+          <Field label="Címsor 2. sor (vége, pl. „a tányérodon.")"><input className={inputCls} value={c.heroTitleLine2Suffix} onChange={e => set("heroTitleLine2Suffix", e.target.value)} /></Field>
         </div>
         <div className="mt-4">
           <Field label="Alcím / leírás"><textarea className={taCls} value={c.heroSubtitle} onChange={e => set("heroSubtitle", e.target.value)} /></Field>
@@ -250,7 +294,7 @@ function HeroTab({ c, save, set }: { c: SiteContent; save: SaveFn; set: SetFn })
           <div className="grid sm:grid-cols-3 gap-2">
             {c.basketItems.map((it, i) => (
               <div key={it.id} className="flex gap-2 items-center bg-cream-50 rounded-xl p-2 border border-cream-200">
-                <input className={`${inputCls} text-2xl text-center w-16`} value={it.emoji} onChange={e => updateItem(i, { emoji: e.target.value })} />
+                <EmojiPicker value={it.emoji} onChange={v => updateItem(i, { emoji: v })} />
                 <select className={inputCls} value={it.bg} onChange={e => updateItem(i, { bg: e.target.value as any })}>
                   <option value="leaf">Zöld háttér</option>
                   <option value="tomato">Piros háttér</option>
@@ -286,8 +330,8 @@ function AboutTab({ c, set }: { c: SiteContent; set: SetFn }) {
           const tK = `aboutCard${n}Title` as keyof SiteContent;
           const dK = `aboutCard${n}Desc` as keyof SiteContent;
           return (
-            <div key={n} className="grid sm:grid-cols-12 gap-3 mb-3">
-              <input className={`${inputCls} sm:col-span-1 text-2xl text-center`} value={c[eK] as string} onChange={e => set(eK, e.target.value as any)} />
+            <div key={n} className="grid sm:grid-cols-12 gap-3 mb-3 items-center">
+              <div className="sm:col-span-1"><EmojiPicker value={c[eK] as string} onChange={v => set(eK, v as any)} /></div>
               <input className={`${inputCls} sm:col-span-3`} placeholder="Cím" value={c[tK] as string} onChange={e => set(tK, e.target.value as any)} />
               <input className={`${inputCls} sm:col-span-8`} placeholder="Leírás" value={c[dK] as string} onChange={e => set(dK, e.target.value as any)} />
             </div>
@@ -325,7 +369,7 @@ function HowTab({ c, save, set }: { c: SiteContent; save: SaveFn; set: SetFn }) 
         <div className="space-y-3">
           {c.howSteps.map((s, i) => (
             <div key={s.id} className="grid sm:grid-cols-12 gap-2 items-start bg-cream-50 rounded-xl p-3 border border-cream-200">
-              <input className={`${inputCls} sm:col-span-1 text-2xl text-center`} value={s.emoji} onChange={e => update(i, { emoji: e.target.value })} />
+              <div className="sm:col-span-1"><EmojiPicker value={s.emoji} onChange={v => update(i, { emoji: v })} /></div>
               <input className={`${inputCls} sm:col-span-3`} placeholder="Cím" value={s.title} onChange={e => update(i, { title: e.target.value })} />
               <textarea className={`${inputCls} sm:col-span-6 min-h-[60px]`} placeholder="Leírás" value={s.desc} onChange={e => update(i, { desc: e.target.value })} />
               <div className="sm:col-span-2 flex gap-1 justify-end">
@@ -356,6 +400,24 @@ function ProducersTab({ c, save }: { c: SiteContent; save: SaveFn }) {
     const list = [...c.producers]; [list[i], list[j]] = [list[j], list[i]];
     save({ ...c, producers: list });
   };
+  const sortAbc = () => {
+    const sorted = [...c.producers].sort((a, b) => a.name.localeCompare(b.name, "hu", { sensitivity: "base" }));
+    save({ ...c, producers: sorted });
+  };
+  const onLogo = (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => update(i, { logoDataUrl: r.result as string });
+    r.readAsDataURL(f);
+  };
+  const COLORS: { v: Producer["bgColor"]; l: string; sw: string }[] = [
+    { v: "leaf",   l: "Zöld",   sw: "bg-leaf-50 border-leaf-200" },
+    { v: "tomato", l: "Piros",  sw: "bg-tomato-50 border-tomato-200" },
+    { v: "cream",  l: "Krém",   sw: "bg-cream-100 border-cream-200" },
+    { v: "sky",    l: "Kék",    sw: "bg-sky-50 border-sky-200" },
+    { v: "peach",  l: "Barack", sw: "bg-peach-50 border-peach-200" },
+    { v: "lilac",  l: "Lila",   sw: "bg-lilac-50 border-lilac-200" },
+  ];
 
   return (
     <>
@@ -369,19 +431,51 @@ function ProducersTab({ c, save }: { c: SiteContent; save: SaveFn }) {
         </div>
       </Section>
       <Section title={`Termelők (${c.producers.length})`}>
+        <div className="flex gap-2 mb-4">
+          <button onClick={sortAbc} className="bg-white border border-cream-200 hover:bg-cream-50 text-sm font-semibold px-4 py-2 rounded-full">
+            🔤 ABC sorrend
+          </button>
+        </div>
         <div className="space-y-3">
           {c.producers.map((p, i) => (
-            <div key={p.id} className="grid sm:grid-cols-12 gap-3 items-center bg-cream-50 rounded-xl p-3 border border-cream-200">
-              <input className={`${inputCls} sm:col-span-1 text-2xl text-center`} value={p.emoji} onChange={e => update(i, { emoji: e.target.value })} />
-              <input className={`${inputCls} sm:col-span-3`} placeholder="Név" value={p.name} onChange={e => update(i, { name: e.target.value })} />
-              <input className={`${inputCls} sm:col-span-4`} placeholder="Leírás" value={p.description} onChange={e => update(i, { description: e.target.value })} />
-              <select className={`${inputCls} sm:col-span-2`} value={p.bgColor} onChange={e => update(i, { bgColor: e.target.value as any })}>
-                <option value="leaf">Zöld</option><option value="tomato">Piros</option><option value="cream">Krém</option>
-              </select>
-              <div className="sm:col-span-2 flex gap-1 justify-end">
-                <button onClick={() => move(i, -1)} className="px-2 py-1.5 bg-white border border-cream-200 rounded-lg text-sm">↑</button>
-                <button onClick={() => move(i, 1)} className="px-2 py-1.5 bg-white border border-cream-200 rounded-lg text-sm">↓</button>
-                <button onClick={() => del(i)} className="px-2 py-1.5 bg-tomato-500 text-white rounded-lg text-sm">×</button>
+            <div key={p.id} className="bg-cream-50 rounded-xl p-3 border border-cream-200">
+              <div className="grid sm:grid-cols-12 gap-3 items-center">
+                <div className="sm:col-span-2 flex flex-col items-center gap-1">
+                  <div className="w-20 h-20 rounded-xl bg-white border border-cream-200 flex items-center justify-center overflow-hidden">
+                    {p.logoDataUrl
+                      ? <img src={p.logoDataUrl} alt="" className="max-w-full max-h-full object-contain" />
+                      : <span className="text-3xl">{p.emoji}</span>}
+                  </div>
+                  <div className="flex gap-1 items-center">
+                    <EmojiPicker value={p.emoji} onChange={v => update(i, { emoji: v })} />
+                  </div>
+                </div>
+                <div className="sm:col-span-10 space-y-2">
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    <input className={inputCls} placeholder="Név" value={p.name} onChange={e => update(i, { name: e.target.value })} />
+                    <input className={inputCls} placeholder="Leírás" value={p.description} onChange={e => update(i, { description: e.target.value })} />
+                  </div>
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <label className="text-xs font-semibold text-ink-800/70">Logó:</label>
+                    <input type="file" accept="image/*" onChange={e => onLogo(i, e)} className="text-xs" />
+                    {p.logoDataUrl && (
+                      <button onClick={() => update(i, { logoDataUrl: null })} className="text-xs text-tomato-600 hover:underline">Logó törlése</button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="text-xs font-semibold text-ink-800/70">Háttér:</span>
+                    {COLORS.map(col => (
+                      <button key={col.v} type="button" onClick={() => update(i, { bgColor: col.v })}
+                              title={col.l}
+                              className={`w-8 h-8 rounded-full border-2 ${col.sw} ${p.bgColor===col.v ? "ring-2 ring-tomato-500 ring-offset-1" : ""}`} />
+                    ))}
+                  </div>
+                  <div className="flex gap-1 justify-end pt-1">
+                    <button onClick={() => move(i, -1)} className="px-2 py-1.5 bg-white border border-cream-200 rounded-lg text-sm">↑</button>
+                    <button onClick={() => move(i, 1)} className="px-2 py-1.5 bg-white border border-cream-200 rounded-lg text-sm">↓</button>
+                    <button onClick={() => del(i)} className="px-3 py-1.5 bg-tomato-500 text-white rounded-lg text-sm">Törlés</button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
@@ -473,14 +567,34 @@ function ContactTab({ c, set }: { c: SiteContent; set: SetFn }) {
           <Field label="Alsó CTA gomb (shopra visz)"><input className={inputCls} value={c.contactShopCta} onChange={e => set("contactShopCta", e.target.value)} /></Field>
         </div>
       </Section>
-      <Section title="Térkép (Google Maps embed URL)">
-        <Field label="Embed URL"
-               hint='Google Mapson keress rá a címre → Megosztás → Térkép beágyazása → másold ki a src="..." értékét. Vagy: https://www.google.com/maps?q=CÍM&output=embed'>
-          <input className={inputCls} value={c.mapEmbedUrl} onChange={e => set("mapEmbedUrl", e.target.value)} />
+      <Section title="Térkép (Google Maps)">
+        <Field label="Cím gyors-beállítás (egyszerű mód)"
+               hint="Csak írd be a címet és kattints a Beállítás gombra — automatikusan elkészítjük a térkép URL-t.">
+          <div className="flex gap-2">
+            <input id="map-addr-quick" className={inputCls} placeholder="pl. Budapest, Andrássy út 1." />
+            <button type="button"
+                    onClick={() => {
+                      const el = document.getElementById("map-addr-quick") as HTMLInputElement | null;
+                      const addr = el?.value.trim();
+                      if (!addr) return;
+                      set("mapEmbedUrl", `https://www.google.com/maps?q=${encodeURIComponent(addr)}&output=embed`);
+                    }}
+                    className="bg-leaf-600 hover:bg-leaf-700 text-white font-semibold px-5 py-2 rounded-xl whitespace-nowrap">Beállítás</button>
+          </div>
         </Field>
+        <div className="mt-5">
+          <Field label="Vagy egyéni Embed URL / iframe kód"
+                 hint='Google Maps → keress rá a címre → Megosztás → "Térkép beágyazása" → másold be akár a teljes <iframe ...> kódot, akár csak az URL-t. Automatikusan kinyerjük.'>
+            <input className={inputCls} value={c.mapEmbedUrl}
+                   onChange={e => set("mapEmbedUrl", sanitizeMapEmbed(e.target.value))} />
+          </Field>
+          {c.mapEmbedUrl && !/^https?:\/\/(www\.)?(google\.[a-z.]+\/maps|maps\.google\.)/.test(c.mapEmbedUrl) && (
+            <p className="mt-2 text-xs text-tomato-600">⚠️ Ez nem tűnik Google Maps URL-nek. Az előnézetben a megadott oldal jelenik meg. Használd a gyors-beállítást vagy a Google Maps „Térkép beágyazása" funkcióját.</p>
+          )}
+        </div>
         {c.mapEmbedUrl && (
           <div className="mt-4 rounded-xl overflow-hidden border border-cream-200">
-            <iframe src={c.mapEmbedUrl} className="w-full h-64" loading="lazy" />
+            <iframe src={c.mapEmbedUrl} className="w-full h-64" loading="lazy" title="Térkép előnézet" />
           </div>
         )}
       </Section>

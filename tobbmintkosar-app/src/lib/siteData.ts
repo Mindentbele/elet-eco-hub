@@ -1,6 +1,7 @@
 // LocalStorage-based site data store for "Több, mint kosár"
 
-export type Producer = { id: string; name: string; description: string; emoji: string; bgColor: "leaf" | "tomato" | "cream" };
+export type ProducerColor = "leaf" | "tomato" | "cream" | "sky" | "peach" | "lilac";
+export type Producer = { id: string; name: string; description: string; emoji: string; bgColor: ProducerColor; logoDataUrl?: string | null };
 export type Faq = { id: string; question: string; answer: string };
 export type BasketItem = { id: string; emoji: string; bg: "leaf" | "tomato" | "cream" };
 export type HowStep = { id: string; emoji: string; title: string; desc: string };
@@ -22,6 +23,7 @@ export type SiteContent = {
   heroTitleAccent: string;
   heroTitleLine2Prefix: string;
   heroTitleLine2Accent: string;
+  heroTitleLine2Suffix: string;
   heroSubtitle: string;
   heroCtaPrimary: string;
   heroCtaSecondary: string;
@@ -102,6 +104,7 @@ export const defaultContent: SiteContent = {
   heroTitleAccent: "kosár.",
   heroTitleLine2Prefix: "Egy",
   heroTitleLine2Accent: "közösség",
+  heroTitleLine2Suffix: "a tányérodon.",
   heroSubtitle: "Heti friss zöldség- és gyümölcskosarak közvetlenül helyi gazdáktól. Rendeld meg pár kattintással — és támogasd a magyar termelőket.",
   heroCtaPrimary: "🛒 Vásárolj most a shopban",
   heroCtaSecondary: "Hogyan működik?",

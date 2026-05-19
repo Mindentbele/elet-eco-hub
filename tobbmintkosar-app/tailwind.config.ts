@@ -8,6 +8,9 @@ export default {
         tomato: { 50:"#fff5f3",100:"#ffe4dd",400:"#ff7a5c",500:"#ef5a3c",600:"#d8432a",700:"#b3331e" },
         leaf:   { 50:"#f1faf0",100:"#dff3dc",400:"#6cbf63",500:"#4ea845",600:"#3a8a33",700:"#2d6b28" },
         cream:  { 50:"#fffaf0",100:"#fdf2dc",200:"#f7e4bd" },
+        sky:    { 50:"#eff8ff",100:"#dceeff",200:"#bcdcfb" },
+        peach:  { 50:"#fff4ec",100:"#ffe2cf",200:"#ffd1b3" },
+        lilac:  { 50:"#f6f0ff",100:"#e8dcff",200:"#d6c2fb" },
         ink:    { 800:"#2b2118",900:"#1a130c" },
       },
       fontFamily: {

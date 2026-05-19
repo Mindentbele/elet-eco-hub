@@ -23,6 +23,7 @@ export type SiteContent = {
   heroTitleAccent: string;
   heroTitleLine2Prefix: string;
   heroTitleLine2Accent: string;
+  heroTitleLine2Suffix: string;
   heroSubtitle: string;
   heroCtaPrimary: string;
   heroCtaSecondary: string;

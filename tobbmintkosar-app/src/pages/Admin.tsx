@@ -400,6 +400,24 @@ function ProducersTab({ c, save }: { c: SiteContent; save: SaveFn }) {
     const list = [...c.producers]; [list[i], list[j]] = [list[j], list[i]];
     save({ ...c, producers: list });
   };
+  const sortAbc = () => {
+    const sorted = [...c.producers].sort((a, b) => a.name.localeCompare(b.name, "hu", { sensitivity: "base" }));
+    save({ ...c, producers: sorted });
+  };
+  const onLogo = (i: number, e: React.ChangeEvent<HTMLInputElement>) => {
+    const f = e.target.files?.[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = () => update(i, { logoDataUrl: r.result as string });
+    r.readAsDataURL(f);
+  };
+  const COLORS: { v: Producer["bgColor"]; l: string; sw: string }[] = [
+    { v: "leaf",   l: "Zöld",   sw: "bg-leaf-50 border-leaf-200" },
+    { v: "tomato", l: "Piros",  sw: "bg-tomato-50 border-tomato-200" },
+    { v: "cream",  l: "Krém",   sw: "bg-cream-100 border-cream-200" },
+    { v: "sky",    l: "Kék",    sw: "bg-sky-50 border-sky-200" },
+    { v: "peach",  l: "Barack", sw: "bg-peach-50 border-peach-200" },
+    { v: "lilac",  l: "Lila",   sw: "bg-lilac-50 border-lilac-200" },
+  ];
 
   return (
     <>
@@ -413,19 +431,51 @@ function ProducersTab({ c, save }: { c: SiteContent; save: SaveFn }) {
         </div>
       </Section>
       <Section title={`Termelők (${c.producers.length})`}>
+        <div className="flex gap-2 mb-4">
+          <button onClick={sortAbc} className="bg-white border border-cream-200 hover:bg-cream-50 text-sm font-semibold px-4 py-2 rounded-full">
+            🔤 ABC sorrend
+          </button>
+        </div>
         <div className="space-y-3">
           {c.producers.map((p, i) => (
-            <div key={p.id} className="grid sm:grid-cols-12 gap-3 items-center bg-cream-50 rounded-xl p-3 border border-cream-200">
-              <input className={`${inputCls} sm:col-span-1 text-2xl text-center`} value={p.emoji} onChange={e => update(i, { emoji: e.target.value })} />
-              <input className={`${inputCls} sm:col-span-3`} placeholder="Név" value={p.name} onChange={e => update(i, { name: e.target.value })} />
-              <input className={`${inputCls} sm:col-span-4`} placeholder="Leírás" value={p.description} onChange={e => update(i, { description: e.target.value })} />
-              <select className={`${inputCls} sm:col-span-2`} value={p.bgColor} onChange={e => update(i, { bgColor: e.target.value as any })}>
-                <option value="leaf">Zöld</option><option value="tomato">Piros</option><option value="cream">Krém</option>
-              </select>
-              <div className="sm:col-span-2 flex gap-1 justify-end">
-                <button onClick={() => move(i, -1)} className="px-2 py-1.5 bg-white border border-cream-200 rounded-lg text-sm">↑</button>
-                <button onClick={() => move(i, 1)} className="px-2 py-1.5 bg-white border border-cream-200 rounded-lg text-sm">↓</button>
-                <button onClick={() => del(i)} className="px-2 py-1.5 bg-tomato-500 text-white rounded-lg text-sm">×</button>
+            <div key={p.id} className="bg-cream-50 rounded-xl p-3 border border-cream-200">
+              <div className="grid sm:grid-cols-12 gap-3 items-center">
+                <div className="sm:col-span-2 flex flex-col items-center gap-1">
+                  <div className="w-20 h-20 rounded-xl bg-white border border-cream-200 flex items-center justify-center overflow-hidden">
+                    {p.logoDataUrl
+                      ? <img src={p.logoDataUrl} alt="" className="max-w-full max-h-full object-contain" />
+                      : <span className="text-3xl">{p.emoji}</span>}
+                  </div>
+                  <div className="flex gap-1 items-center">
+                    <EmojiPicker value={p.emoji} onChange={v => update(i, { emoji: v })} />
+                  </div>
+                </div>
+                <div className="sm:col-span-10 space-y-2">
+                  <div className="grid sm:grid-cols-2 gap-2">
+                    <input className={inputCls} placeholder="Név" value={p.name} onChange={e => update(i, { name: e.target.value })} />
+                    <input className={inputCls} placeholder="Leírás" value={p.description} onChange={e => update(i, { description: e.target.value })} />
+                  </div>
+                  <div className="flex flex-wrap gap-3 items-center">
+                    <label className="text-xs font-semibold text-ink-800/70">Logó:</label>
+                    <input type="file" accept="image/*" onChange={e => onLogo(i, e)} className="text-xs" />
+                    {p.logoDataUrl && (
+                      <button onClick={() => update(i, { logoDataUrl: null })} className="text-xs text-tomato-600 hover:underline">Logó törlése</button>
+                    )}
+                  </div>
+                  <div className="flex flex-wrap gap-2 items-center">
+                    <span className="text-xs font-semibold text-ink-800/70">Háttér:</span>
+                    {COLORS.map(col => (
+                      <button key={col.v} type="button" onClick={() => update(i, { bgColor: col.v })}
+                              title={col.l}
+                              className={`w-8 h-8 rounded-full border-2 ${col.sw} ${p.bgColor===col.v ? "ring-2 ring-tomato-500 ring-offset-1" : ""}`} />
+                    ))}
+                  </div>
+                  <div className="flex gap-1 justify-end pt-1">
+                    <button onClick={() => move(i, -1)} className="px-2 py-1.5 bg-white border border-cream-200 rounded-lg text-sm">↑</button>
+                    <button onClick={() => move(i, 1)} className="px-2 py-1.5 bg-white border border-cream-200 rounded-lg text-sm">↓</button>
+                    <button onClick={() => del(i)} className="px-3 py-1.5 bg-tomato-500 text-white rounded-lg text-sm">Törlés</button>
+                  </div>
+                </div>
               </div>
             </div>
           ))}
